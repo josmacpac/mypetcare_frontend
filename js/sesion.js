@@ -40,7 +40,7 @@ export async function customFetch(endpoint, method = 'GET', body = null) {
         method: method,
         headers: {
             'Content-Type': 'application/json',
-            // 'Authorization': `Bearer ${localStorage.getItem('token')}` // Descomenta si usas JWT
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
         }
     };
 
