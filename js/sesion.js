@@ -30,3 +30,35 @@ export async function configurarInterfazUsuario() {
 
 // Opcional: Ejecutar automáticamente al cargar el script
 configurarInterfazUsuario();
+
+
+// Este archivo centraliza todas las peticiones al backend
+export async function customFetch(endpoint, method = 'GET', body = null) {
+    const url = endpoint; // Aquí puedes concatenar una BASE_URL si la tienes
+    
+    const config = {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${localStorage.getItem('token')}` // Descomenta si usas JWT
+        }
+    };
+
+    if (body) {
+        config.body = JSON.stringify(body);
+    }
+
+    try {
+        const response = await fetch(url, config);
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.message || 'Error en la petición');
+        }
+        
+        return result;
+    } catch (error) {
+        console.error("Error API:", error);
+        throw error;
+    }
+}
