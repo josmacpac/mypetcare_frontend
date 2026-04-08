@@ -1,6 +1,8 @@
 // sesion.js
 import { supabase } from './supabaseConfig.js';
 
+const BASE_URL = "http://localhost:5000";
+
 export async function configurarInterfazUsuario() {
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -34,13 +36,16 @@ configurarInterfazUsuario();
 
 // Este archivo centraliza todas las peticiones al backend
 export async function customFetch(endpoint, method = 'GET', body = null) {
-    const url = endpoint; // Aquí puedes concatenar una BASE_URL si la tienes
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token; // Este es el JWT que espera Flask
+    const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
     
     const config = {
         method: method,
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            'Authorization': `Bearer ${token}` 
         }
     };
 

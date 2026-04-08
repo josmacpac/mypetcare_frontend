@@ -188,10 +188,11 @@
                             <label class="form-label small fw-bold text-muted">Presentación</label>
                             <select name="presentacion" class="form-select bg-light border-0 py-2" required>
                                 <option value="" selected disabled>Seleccionar...</option>
-                                <option value="Tableta">Tableta</option>
-                                <option value="Suspención">Suspención</option>
-                                <option value="Capsulas">Capsulas</option>
-                                <option value="Pieza">Pieza</option>
+                                <option value=1>Tableta</option>
+                                <option value=2>Suspención</option>
+                                <option value=3>Capsulas</option>
+                                <option value=4>Pieza</option>
+                                <option value=5>Bulto</option>
                             </select>
                         </div>
 
@@ -199,10 +200,10 @@
                             <label class="form-label small fw-bold text-muted">Categoría</label>
                             <select name="categoria_articulo" class="form-select bg-light border-0 py-2" required>
                                 <option value="" selected disabled>Seleccionar...</option>
-                                <option value="Medicamentos">Medicamentos</option>
-                                <option value="Alimentos">Alimentos</option>
-                                <option value="Accesorios">Accesorios</option>
-                                <option value="Higiene">Higiene</option>
+                                <option value=505>Medicamentos</option>
+                                <option value=506>Alimentos</option>
+                                <option value=507>Accesorios</option>
+                                <option value=508>Higiene</option>
                             </select>
                         </div>
 
@@ -221,11 +222,11 @@
                             <input type="number" name="stock_minimo" class="form-control bg-light border-0 py-2" placeholder="5" required>
                         </div>
                     </div>
+                    <div class="modal-footer border-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="formAltaArticulo" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Artículo</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" form="formAltaArticulo" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Artículo</button>
             </div>
         </div>
     </div>
@@ -537,7 +538,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
-<script src="js/inventario.js"></script>
+<script type="module" src="js/inventario.js"></script>
 <script type="module" src="js/sesion.js"></script>
 </body>
 </html>
