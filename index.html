@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario - MyPetCare</title>
+    <title>Dashboard - MyPetCare</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <style>
         html {display: none;}
     </style>
     <script type="module" src="js/authGuard.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
-
+    <style>
+        /* Pequeño ajuste para las tarjetas del dashboard */
+        .card-stats {
+            border: none;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+        .card-stats:hover {
+            transform: translateY(-5px);
+        }
+        .icon-shape {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+    </style>
 </head>
 <body>
 
@@ -33,16 +50,16 @@
         </div>
         <div class="offcanvas-body">
             <ul class="nav flex-column">
-                <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-calendar-day me-2"></i> Citas de Hoy</a></li>
+                <li class="nav-item"><a href="index.html" class="nav-link py-3 active fw-bold text-primary"><i class="fas fa-th-large me-2"></i> Inicio</a></li>
+                <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-calendar-day me-2"></i> Citas</a></li>
                 <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-paw me-2"></i> Pacientes</a></li>
-                <li class="nav-item"><a href="index.html" class="nav-link py-3 active fw-bold text-primary"><i class="fas fa-stethoscope me-2"></i> Inventario</a></li>
-                <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-chart-bar me-2"></i> Reportes</a></li>
+                <li class="nav-item"><a href="inventarios.html" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Inventario</a></li>
+                <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Reportes</a></li>
             </ul>
         </div>
     </div>
 
     <div class="d-flex">
-        
         <nav class="sidebar d-none d-lg-block">
             <div class="p-4">
                 <div class="text-center mb-4">
@@ -51,504 +68,169 @@
                 </div>
                 <hr>
                 <ul class="nav flex-column mt-4">
-                    <li class="nav-item"><a href="index.html" class="nav-link">📅 Citas de Hoy</a></li>
+                    <li class="nav-item"><a href="index.html" class="nav-link active">🏠 Inicio</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">📅 Citas de Hoy</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">🐾 Pacientes</a></li>
-                    <li class="nav-item"><a href="inventarios.html" class="nav-link active">🩺 Inventario</a></li>
+                    <li class="nav-item"><a href="inventarios.html" class="nav-link">🩺 Inventario</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">📊 Reportes</a></li>
                 </ul>
-                <div class="mt-3 pt-3 text-center">
-                    <button class="btn btn-sidebar w-100 rounded-pill py-3">+ Nueva Consulta</button>
-                </div>
-                <div class="mt-3 pt-3 text-center">
-                    <button class="btn btn-sidebar w-100 rounded-pill py-3">+ Nueva Venta</button>
+                <div class="mt-5 pt-3">
+                    <button class="btn btn-sidebar w-100 rounded-pill py-3 mb-2">+ Nueva Consulta</button>
+                    <button class="btn btn-outline-light w-100 rounded-pill py-2 border-0" style="background: rgba(255,255,255,0.1)">+ Nueva Venta</button>
                 </div>
             </div>
         </nav>
 
-        <main class="flex-grow-1 p-5">
-
+        <main class="flex-grow-1 p-4 p-md-5">
+            
             <div class="d-flex justify-content-between align-items-center mb-5">
-    <h2 class="fw-bold">Gestión de <span style="color: var(--pearl-agua);">Inventario</span></h2>
-    
-    <div class="bg-white p-2 px-4 rounded-pill shadow-sm d-flex align-items-center gap-3">
-        <span class="small fw-bold text-secondary" id="userName">Cargando...</span>
-        
-        <div class="dropdown">
-            <button class="btn border-0 p-0 d-flex align-items-center justify-content-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="width: 45px; height: 45px;">
-                
-                <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                     style="width: 45px; height: 45px; background-color: var(--alice-blue); border: 2px solid var(--pearl-agua); color: var(--pearl-agua); font-size: 1.2rem;">
-                    <i class="fas fa-user"></i>
+                <div>
+                    <h2 class="fw-bold mb-0">¡Hola, <span style="color: var(--pearl-agua);">Dr. García</span>!</h2>
+                    <p class="text-muted">Esto es lo que sucede hoy en la clínica.</p>
                 </div>
-                
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu" style="border-radius: 15px; z-index: 9999;">
-                <li><h6 class="dropdown-header">Opciones de Cuenta</h6></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item text-danger fw-bold" href="#" id="btnLogout">
-                        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-            <div class="d-flex flex-wrap gap-3 mb-4">
-                <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAltaArticulo">
-                    <i class="fas fa-plus-circle me-2"></i> Alta de artículo
-                </button>
-                <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEntrada">
-                    <i class="fas fa-truck-loading me-2"></i> Entrada
-                </button>
-                <button class="btn btn-warning text-white rounded-pill px-4 py-2 shadow-sm"  data-bs-toggle="modal" data-bs-target="#modalReporteCaducidad">
-                    <i class="fas fa-calendar-times me-2"></i> Reporte Caducidades
-                </button>
-                <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#">
-                    <i class="fas fa-truck-loading me-2"></i> Registro Proveedor
-                </button>
+                <div class="bg-white p-2 px-4 rounded-pill shadow-sm d-flex align-items-center gap-3">
+                    <span class="small fw-bold text-secondary">Admin</span>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 40px; height: 40px; background-color: #f0f7f7; border: 2px solid #5fb7b7; color: #5fb7b7;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
             </div>
 
-            <div class="bg-white p-4 rounded-4 shadow-sm">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
-                            <input type="text" class="form-control bg-light border-0" placeholder="Buscar por SKU o nombre de artículo...">
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="card card-stats shadow-sm p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-shape bg-primary-subtle text-primary me-3">
+                                <i class="fas fa-calendar-check fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-0 small">Citas Hoy</h6>
+                                <h4 class="fw-bold mb-0">12</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-stats shadow-sm p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-shape bg-success-subtle text-success me-3">
+                                <i class="fas fa-dog fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-0 small">Pacientes</h6>
+                                <h4 class="fw-bold mb-0">348</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-stats shadow-sm p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-shape bg-warning-subtle text-warning me-3">
+                                <i class="fas fa-exclamation-triangle fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-0 small">Stock Bajo</h6>
+                                <h4 class="fw-bold mb-0">5</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-stats shadow-sm p-3 bg-white">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-shape bg-info-subtle text-info me-3">
+                                <i class="fas fa-dollar-sign fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-muted mb-0 small">Ventas Hoy</h6>
+                                <h4 class="fw-bold mb-0">$4,250</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0"><i class="fas fa-clock me-2 text-primary"></i> Próximas Citas</h5>
+                            <a href="#" class="btn btn-sm btn-light rounded-pill">Ver todas</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr class="text-muted small">
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Dueño</th>
+                                        <th>Motivo</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold">10:30 AM</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-light rounded-circle p-2 me-2"><i class="fas fa-cat text-secondary"></i></div>
+                                                <span>Luna</span>
+                                            </div>
+                                        </td>
+                                        <td class="small">Juan Pérez</td>
+                                        <td><span class="badge bg-light text-dark border">Vacunación</span></td>
+                                        <td><span class="badge bg-success rounded-pill px-3">Confirmado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">11:15 AM</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-light rounded-circle p-2 me-2"><i class="fas fa-dog text-secondary"></i></div>
+                                                <span>Max</span>
+                                            </div>
+                                        </td>
+                                        <td class="small">María López</td>
+                                        <td><span class="badge bg-light text-dark border">Cirugía</span></td>
+                                        <td><span class="badge bg-warning text-dark rounded-pill px-3">Pendiente</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table table-custom align-middle">
-                        <thead>
-                            <tr class="text-muted small">
-                                <th class="ps-4">SKU</th>
-                                <th>ARTÍCULO</th>
-                                <th>CATEGORÍA</th>
-                                <th>STOCK ACTUAL</th>
-                                <th class="text-center">ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="ps-4 fw-bold">750123456789</td>
-                                <td>Apoquel 16mg (20 tabletas)</td>
-                                <td><span class="badge bg-info-subtle text-info rounded-pill px-3">Medicamento</span></td>
-                                <td>
-                                    <span class="fw-bold text-danger">4 unidades</span> 
-                                    <small class="text-muted d-block" style="font-size: 0.7rem;">⚠️ Stock Mínimo: 5</small>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3">Detalle</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-4 fw-bold">750987654321</td>
-                                <td>Nupec Adulto 2kg</td>
-                                <td><span class="badge bg-success-subtle text-success rounded-pill px-3">Alimento</span></td>
-                                <td><span class="fw-bold">15 unidades</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-detalle" data-id="750123">Detalle</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-lg-4">
+                    <div class="bg-white p-4 rounded-4 shadow-sm mb-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-bell me-2 text-danger"></i> Alertas Críticas</h5>
+                        <div class="alert alert-danger border-0 rounded-4 small mb-2">
+                            <i class="fas fa-pills me-2"></i> <strong>Apoquel 16mg</strong> está por agotarse (4 piezas).
+                        </div>
+                        <div class="alert alert-warning border-0 rounded-4 small">
+                            <i class="fas fa-hourglass-end me-2"></i> 2 productos vencen en menos de 30 días.
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-4 shadow-sm">
+                        <h5 class="fw-bold mb-3">Accesos Rápidos</h5>
+                        <div class="d-grid gap-2">
+                            <a href="inventarios.html" class="btn btn-outline-primary text-start rounded-3 p-3">
+                                <i class="fas fa-box-open me-2"></i> Revisar Inventario
+                            </a>
+                            <button class="btn btn-outline-secondary text-start rounded-3 p-3">
+                                <i class="fas fa-file-invoice-dollar me-2"></i> Corte de Caja
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </main>
     </div>
 
-    <div class="modal fade" id="modalAltaArticulo" tabindex="-1" aria-labelledby="modalAltaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="modalAltaLabel">🚀 Registrar Nuevo Artículo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="formAltaArticulo">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">SKU / Código</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-0"><i class="fas fa-barcode"></i></span>
-                                <input type="text" class="form-control bg-light border-0 py-2" placeholder="Escanea o escribe">
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label small fw-bold text-muted">Nombre del Artículo</label>
-                            <input type="text" class="form-control bg-light border-0 py-2" placeholder="Ej. Antibiótico Plus 500mg" required>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Tipo</label>
-                            <select class="form-select bg-light border-0 py-2">
-                                <option selected>Seleccionar...</option>
-                                <option>Tableta</option>
-                                <option>Suspención</option>
-                                <option>Capsulas</option>
-                                <option>Pieza</option>
-                                <option>Bulto</option>
-                                <option>Sobre</option>
-                                <option>Lata</option>
-                                <option>Frasco</option>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/sesion.js"></script>
 
-                                <option>Unidad</option>
-
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Categoría</label>
-                            <select class="form-select bg-light border-0 py-2">
-                                <option selected>Seleccionar...</option>
-                                <option>Medicamentos</option>
-                                <option>Alimentos</option>
-                                <option>Accesorios</option>
-                                <option>Higiene</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">Contenido por empaque</label>
-                            <input type="number" class="form-control bg-light border-0 py-2" placeholder="5">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Precio Compra ($)</label>
-                            <input type="number" step="0.01" class="form-control bg-light border-0 py-2" placeholder="0.00">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Precio Venta ($)</label>
-                            <input type="number" step="0.01" class="form-control bg-light border-0 py-2" placeholder="0.00">
-                        </div>
-
-                        
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">Stock Mínimo</label>
-                            <input type="number" class="form-control bg-light border-0 py-2" placeholder="5">
-                        </div>
-                        
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" form="formAltaArticulo" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Artículo</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEntrada" tabindex="-1" aria-labelledby="modalEntradaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="modalEntradaLabel">📦 Registro de Factura / Entrada</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="formCapturaEntrada" class="row g-3 mb-4 p-3 rounded-4 bg-light border">
-                    <div class="row mt-3 g-2">
-                    <div class="col-md-6">
-                        <input type="text" class="form-control form-control-sm border-0 bg-light" placeholder="No. Factura (Opcional)">
-                    </div>
-                    <div class="col-md-6">
-                        <select class="form-select form-select-sm border-0 bg-light">
-                            <option selected>Proveedor</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <select class="form-select form-select-sm border-0 bg-light">
-                            <option selected>Laboratorio</option>
-                        </select>
-                    </div>
-                </div>
-                    <div class="col-md-12">
-                        <label class="form-label small fw-bold text-primary">Buscar Artículo</label>
-                        <input type="text" class="form-control border-0 shadow-sm" placeholder="Escanee o busque el artículo...">
-                    </div>
-                    <div class="">
-                        <p>Articulo : presentacion : 24 tabletas</p>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Cant.</label>
-                        <input type="number" class="form-control border-0 shadow-sm" placeholder="0">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Costo Unit.</label>
-                        <input type="number" class="form-control border-0 shadow-sm" placeholder="$ 0.00">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Lote</label>
-                        <input type="text" class="form-control border-0 shadow-sm" placeholder="Lote">
-                    </div>
-                    <div class="col-md-8">
-                        <label class="form-label small fw-bold text-danger">Fecha Caducidad</label>
-                        <input type="date" class="form-control border-0 shadow-sm">
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary w-100 rounded-pill shadow-sm">
-                            <i class="fas fa-plus me-1"></i> Agregar
-                        </button>
-                    </div>
-                </form>
-
-                <div class="px-2">
-                    <h6 class="fw-bold mb-3"><i class="fas fa-list-ul me-2"></i> Artículos en esta Factura</h6>
-                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
-                        <table class="table table-sm align-middle">
-                            <thead class="bg-white sticky-top">
-                                <tr class="text-muted small">
-                                    <th>Artículo</th>
-                                    <th>Cant.</th>
-                                    <th>Lote</th>
-                                    <th>Vence</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="listaTemporalEntrada">
-                                <tr class="small">
-                                    <td class="fw-bold">Apoquel 16mg</td>
-                                    <td>10</td>
-                                    <td>L-405</td>
-                                    <td>12/26</td>
-                                    <td>$1,500</td>
-                                    <td><button class="btn btn-link btn-sm text-danger p-0"><i class="fas fa-times"></i></button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                
-            </div>
-            
-            <div class="modal-footer border-0 pb-4 px-4 justify-content-between">
-                <div class="h5 fw-bold text-primary mb-0">Total: $1,500.00</div>
-                <div>
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Guardar Todo</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalReporteCaducidad" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-0 pt-4 px-4">
-                <div>
-                    <h5 class="modal-title fw-bold" id="modalReporteLabel">📅 Reporte de Próximos a Vencer</h5>
-                    <p class="text-muted small mb-0">Control preventivo de inventario y mermas por caducidad.</p>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            
-            <div class="modal-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 bg-light p-3 rounded-4">
-                    <div class="d-flex gap-3 align-items-center">
-                        <span class="small fw-bold text-muted">Filtrar por:</span>
-                        <select class="form-select form-select-sm border-0 shadow-sm rounded-pill" style="width: 200px;">
-                            <option>Todo lo próximo (90 días)</option>
-                            <option>Vencido (Crítico)</option>
-                            <option>Vence este mes</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-danger rounded-pill px-4 shadow-sm btn-sm">
-                        <i class="fas fa-file-pdf me-2"></i> Exportar Reporte a PDF
-                    </button>
-                </div>
-
-                <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
-                    <table class="table table-hover align-middle">
-                        <thead class="bg-white sticky-top">
-                            <tr class="text-muted small">
-                                <th class="ps-3">SKU</th>
-                                <th>ARTÍCULO</th>
-                                <th>LOTE</th>
-                                <th>FECHA VENCE</th>
-                                <th>DÍAS RESTANTES</th>
-                                <th>CANTIDAD</th>
-                                <th>ESTADO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="table-danger-light">
-                                <td class="ps-3 fw-bold">750100200300</td>
-                                <td>Vacuna Antirrábica 10ml</td>
-                                <td><span class="badge bg-light text-dark">L-9982</span></td>
-                                <td>10/Feb/2026</td>
-                                <td class="text-danger fw-bold">-10 días</td>
-                                <td>3 pzas</td>
-                                <td><span class="badge bg-danger rounded-pill px-3">VENCIDO</span></td>
-                            </tr>
-                            <tr>
-                                <td class="ps-3 fw-bold">750444555666</td>
-                                <td>Desparasitante Interno</td>
-                                <td><span class="badge bg-light text-dark">L-2201</span></td>
-                                <td>25/Mar/2026</td>
-                                <td class="text-warning fw-bold">33 días</td>
-                                <td>12 pzas</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill px-3">PRÓXIMO</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar Reporte</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="modalDetalleArticulo" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            
-            <div class="modal-header border-0 pt-4 px-4 bg-primary text-white" style="border-radius: 20px 20px 0 0;">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="bg-white p-2 rounded-3">
-                        <i class="fas fa-pills text-primary fs-4"></i>
-                    </div>
-                    <div>
-                        <small class="opacity-75 fw-bold">SKU: 750123456789</small>
-                        <h5 class="modal-title fw-bold" id="modalDetalleLabel">Apoquel 16mg (20 tabletas)</h5>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            
-            <div class="modal-body p-4">
-                <div class="row g-3 mb-4">
-                    <div class="col-md-12">
-                        <h6 class="fw-bold text-muted mb-3 small"><i class="fas fa-info-circle me-2"></i> DATOS GENERALES</h6>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Categoría</label>
-                        <select class="form-select bg-light border-0 py-2">
-                            <option>Medicamentos</option>
-                            <option>Alimentos</option>
-                            <option>Cirugía</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Precio Venta ($)</label>
-                        <input type="number" class="form-control bg-light border-0 py-2" value="850.00">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold text-danger">Stock Mínimo</label>
-                        <input type="number" class="form-control bg-light border-0 py-2" value="5">
-                    </div>
-                </div>
-
-                <hr class="opacity-10">
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold text-muted mb-0 small"><i class="fas fa-boxes me-2"></i> EXISTENCIAS POR LOTE</h6>
-                    <span class="badge bg-primary-subtle text-primary rounded-pill">Total: 10 unidades</span>
-                </div>
-
-                <div class="table-responsive border rounded-4">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr class="text-muted" style="font-size: 0.75rem;">
-                                <th class="ps-3">LOTE</th>
-                                <th>CADUCIDAD</th>
-                                <th>EXISTENCIA</th>
-                                <th>ESTADO</th>
-                                <th class="text-end pe-3">ACCIÓN</th>
-                            </tr>
-                        </thead>
-                        <tbody style="font-size: 0.85rem;">
-                            <tr>
-                                <td class="ps-3 fw-bold">L-4055</td>
-                                <td>15/Abr/2026</td>
-                                <td><span class="fw-bold">8 pzas</span></td>
-                                <td><span class="badge bg-success-subtle text-success rounded-pill">Vigente</span></td>
-                                <td class="text-end pe-3">
-                                    <button class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm" 
-        onclick="abrirAjuste('L-4055', 8)">
-    <i class="fas fa-sync-alt me-1"></i> Ajustar
-</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-3 fw-bold">L-3990</td>
-                                <td>20/Mar/2026</td>
-                                <td><span class="fw-bold">2 pzas</span></td>
-                                <td><span class="badge bg-warning-subtle text-warning rounded-pill">Próximo</span></td>
-                                <td class="text-end pe-3">
-                                    <button class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#modalAjusteInventario">
-                                        <i class="fas fa-sync-alt me-1"></i> Ajustar
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Cambios</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalAjusteInventario" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-0 pt-4 px-4">
-                <h6 class="modal-title fw-bold text-warning"><i class="fas fa-adjust me-2"></i> Ajustar Stock</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body px-4">
-                <form id="formAjuste">
-                    <input type="hidden" id="ajusteLoteId">
-                    
-                    <div class="mb-3 text-center">
-                        <label class="form-label small fw-bold text-muted d-block">Nueva Cantidad Total</label>
-                        <input type="number" id="nuevaCantidad" class="form-control form-control-lg border-0 bg-light text-center fw-bold" placeholder="0" required>
-                        <div id="infoStockActual" class="form-text mt-2 small">Stock actual: <span class="fw-bold">8</span></div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">Motivo del ajuste</label>
-                        <select id="motivoAjuste" class="form-select border-0 bg-light small" required>
-                            <option value="" disabled selected>Seleccione...</option>
-                            <option value="daño">Merma / Frasco roto</option>
-                            <option value="error">Error de conteo inicial</option>
-                            <option value="consumo">Consumo en clínica</option>
-                            <option value="caducado">Caducado (Retiro)</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">Nota adicional</label>
-                        <textarea id="notaAjuste" class="form-control border-0 bg-light small" rows="2" placeholder="Ej: Se rompió al limpiar el estante..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0 pb-4 justify-content-center">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" onclick="guardarAjuste()" class="btn btn-warning rounded-pill px-4 fw-bold shadow-sm">Confirmar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
-<script src="js/inventario.js"></script>
-<script type="module" src="js/sesion.js"></script>
 </body>
 </html>
