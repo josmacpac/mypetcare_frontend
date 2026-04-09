@@ -1,4 +1,4 @@
-import { crearArticulo } from "./articulos.js";
+import { crearArticulo, obtenerArticulos, rellenarTablaArticulos } from "./articulos.js";
 
 // ===============================
 // Inicialización
@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // cargarListaArticulos(); 
     
     registrarEventos();
+    refrescarVista();
 });
 
 
@@ -45,6 +46,12 @@ function registrarEventos() {
 // ===============================
 // Funciones
 // ===============================
+
+async function refrescarVista() {
+    const lista = await obtenerArticulos();
+    rellenarTablaArticulos(lista);
+}
+
 
 async function registrarNuevoArticulo(e){
     e.preventDefault();
