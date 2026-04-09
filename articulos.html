@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Artículos - MyPetCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        html {display: none;}
+    </style>
+    <script type="module" src="js/authGuard.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white d-lg-none shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">🐾 MyPetCare</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" style="width: 280px;">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold">🐾 MyPetCare</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link py-3 text-dark"><i class="fas fa-th-large me-2"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="articulos.html" class="nav-link py-3 active fw-bold text-primary"><i class="fas fa-list me-2"></i> Artículos</a></li>
+                <li class="nav-item"><a href="inventarios.html" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Inventario</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="d-flex">
+        <nav class="sidebar d-none d-lg-block">
+            <div class="p-4">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">🐾 MyPetCare</h3>
+                    <small class="opacity-75">Administración</small>
+                </div>
+                <hr>
+                <ul class="nav flex-column mt-4">
+                    <li class="nav-item"><a href="index.html" class="nav-link">🏠 Inicio</a></li>
+                    <li class="nav-item"><a href="inventarios.html" class="nav-link"> ↩️ Regresar</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="flex-grow-1 p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h2 class="fw-bold">Catálogo de <span style="color: var(--pearl-agua);">Artículos</span></h2>
+                    <p class="text-muted small">Gestión de productos y servicios de la veterinaria.</p>
+                </div>
+                <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAltaArticulo">
+                    <i class="fas fa-plus-circle me-2"></i> Alta de artículo
+                </button>
+            </div>
+
+            <div class="bg-white p-4 rounded-4 shadow-sm">
+                <div class="row mb-4">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" class="form-control bg-light border-0" placeholder="Buscar por SKU o nombre...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr class="text-muted small" style="border-bottom: 2px solid #f8f9fa;">
+                                <th class="ps-3">SKU</th>
+                                <th>ARTÍCULO</th>
+                                <th>PRESENTACIÓN</th>
+                                <th>CATEGORÍA</th>
+                                <th class="text-center">CONTENIDO</th>
+                                <th class="text-center">MIN.</th>
+                                <th>PRECIO VENTA</th>
+                                <th class="text-end pe-3">ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-3 fw-bold">750123456789</td>
+                                <td>Apoquel 16mg</td>
+                                <td>Caja</td>
+                                <td><span class="badge bg-info-subtle text-info rounded-pill px-3">Medicamento</span></td>
+                                <td class="text-center">20 tabs</td>
+                                <td class="text-center">5</td>
+                                <td class="fw-bold text-primary">$850.00</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-light text-primary rounded-circle me-1" title="Editar" onclick="abrirEditar('750123456789')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light text-danger rounded-circle" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalConfirmarEliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modalAltaArticulo" tabindex="-1" aria-labelledby="modalAltaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" id="modalAltaLabel">🚀 Registrar Nuevo Artículo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formAltaArticulo">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">SKU / Código</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="fas fa-barcode"></i></span>
+                                <input type="text" name="sku" class="form-control bg-light border-0 py-2" placeholder="Escanea o escribe" required>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold text-muted">Nombre del Artículo</label>
+                            <input type="text" name="nombre_articulo" class="form-control bg-light border-0 py-2" placeholder="Ej. Antibiótico Plus 500mg" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">Presentación</label>
+                            <select name="presentacion" class="form-select bg-light border-0 py-2" required>
+                                <option value="" selected disabled>Seleccionar...</option>
+                                <option value=1>Tableta</option>
+                                <option value=2>Suspención</option>
+                                <option value=3>Capsulas</option>
+                                <option value=4>Pieza</option>
+                                <option value=5>Bulto</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">Categoría</label>
+                            <select name="categoria_articulo" class="form-select bg-light border-0 py-2" required>
+                                <option value="" selected disabled>Seleccionar...</option>
+                                <option value=505>Medicamentos</option>
+                                <option value=506>Alimentos</option>
+                                <option value=507>Accesorios</option>
+                                <option value=508>Higiene</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">Contenido por empaque</label>
+                            <input type="number" name="contenido_empaque" class="form-control bg-light border-0 py-2" placeholder="5" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">Precio Venta ($)</label>
+                            <input type="number" step="0.01" name="precio_venta" class="form-control bg-light border-0 py-2" placeholder="0.00" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">Stock Mínimo</label>
+                            <input type="number" name="stock_minimo" class="form-control bg-light border-0 py-2" placeholder="5" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 pb-4 px-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="formAltaArticulo" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Artículo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-body p-4 text-center">
+                    <div class="text-danger mb-3">
+                        <i class="fas fa-exclamation-circle fa-4x"></i>
+                    </div>
+                    <h5 class="fw-bold">¿Eliminar artículo?</h5>
+                    <p class="text-muted small">Esta acción no se puede deshacer y el artículo dejará de estar disponible en el catálogo.</p>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger rounded-pill px-4 shadow-sm fw-bold">Sí, Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/inventario.js"></script>
+     <script type="module" src="js/sesion.js"></script>
+</body>
+</html>

@@ -98,9 +98,9 @@
 </div>
 
             <div class="d-flex flex-wrap gap-3 mb-4">
-                <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAltaArticulo">
-                    <i class="fas fa-plus-circle me-2"></i> Alta de artículo
-                </button>
+                <a href="articulos.html" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+    <i class="fas fa-plus-circle me-2"></i> Ver artículos ↩
+</a>
                 <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEntrada">
                     <i class="fas fa-truck-loading me-2"></i> Entrada
                 </button>
@@ -162,75 +162,7 @@
         </main>
     </div>
 
-    <div class="modal fade" id="modalAltaArticulo" tabindex="-1" aria-labelledby="modalAltaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header border-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="modalAltaLabel">🚀 Registrar Nuevo Artículo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="formAltaArticulo">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">SKU / Código</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-0"><i class="fas fa-barcode"></i></span>
-                                <input type="text" name="sku" class="form-control bg-light border-0 py-2" placeholder="Escanea o escribe" required>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label small fw-bold text-muted">Nombre del Artículo</label>
-                            <input type="text" name="nombre_articulo" class="form-control bg-light border-0 py-2" placeholder="Ej. Antibiótico Plus 500mg" required>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Presentación</label>
-                            <select name="presentacion" class="form-select bg-light border-0 py-2" required>
-                                <option value="" selected disabled>Seleccionar...</option>
-                                <option value=1>Tableta</option>
-                                <option value=2>Suspención</option>
-                                <option value=3>Capsulas</option>
-                                <option value=4>Pieza</option>
-                                <option value=5>Bulto</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-muted">Categoría</label>
-                            <select name="categoria_articulo" class="form-select bg-light border-0 py-2" required>
-                                <option value="" selected disabled>Seleccionar...</option>
-                                <option value=505>Medicamentos</option>
-                                <option value=506>Alimentos</option>
-                                <option value=507>Accesorios</option>
-                                <option value=508>Higiene</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">Contenido por empaque</label>
-                            <input type="number" name="contenido_empaque" class="form-control bg-light border-0 py-2" placeholder="5" required>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">Precio Venta ($)</label>
-                            <input type="number" step="0.01" name="precio_venta" class="form-control bg-light border-0 py-2" placeholder="0.00" required>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold text-muted">Stock Mínimo</label>
-                            <input type="number" name="stock_minimo" class="form-control bg-light border-0 py-2" placeholder="5" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0 pb-4 px-4">
-                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" form="formAltaArticulo" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Artículo</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+ 
 
 <div class="modal fade" id="modalEntrada" tabindex="-1" aria-labelledby="modalEntradaLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
