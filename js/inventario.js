@@ -5,6 +5,8 @@ import { customFetch } from './sesion.js';
 // Inicialización
 // ===============================
 
+let articulosCache = []; // Variable global para la búsqueda
+
 document.addEventListener("DOMContentLoaded", () => {  
 
     // Cargar datos iniciales
@@ -38,6 +40,18 @@ function registrarEventos() {
     } else {
         console.error("No se encontró el elemento con ID 'modalEntrada'");
     }
+
+    const inputBusqueda = document.getElementById("input-busqueda");
+    
+    if (inputBusqueda) {
+        inputBusqueda.addEventListener("input", (e) => {
+            const texto = e.target.value.toLowerCase().trim();
+            filtrarArticulos(texto);
+        });
+    }
+
+
+
 }
 
 // ===============================
@@ -45,8 +59,9 @@ function registrarEventos() {
 // ===============================
 
 async function refrescarVista() {
-    const lista = await obtenerArticulos();
-    rellenarTablaArticulos(lista);
+    const listaArticulos = await obtenerArticulos();
+    articulosCache = listaArticulos.data || listaArticulos;// Guardamos una copia para la búsqueda rápida
+    rellenarTablaArticulos(listaArticulos);
 }
 
 
@@ -113,4 +128,61 @@ function imprimirProveedores(listaProveedores, listaLaboratorio) {
     });
 
 
+}
+
+function filtrarArticulos(termino) {
+    const contenedor = document.getElementById("sugerencias-busqueda");
+    
+    if (!termino) {
+        contenedor.innerHTML = "";
+        return;
+    }
+
+    // Filtramos en la variable global que llenamos en refrescarVista
+    const coincidencias = articulosCache.filter(art => 
+        art.nombre_articulo.toLowerCase().includes(termino)
+    );
+
+    contenedor.innerHTML = "";
+
+    coincidencias.slice(0, 5).forEach(art => {
+        const item = document.createElement("button");
+        item.classList.add("list-group-item", "list-group-item-action", "border-0", "shadow-sm", "mb-1");
+        
+        // Mostramos Nombre y Presentación en la sugerencia
+        item.textContent = `${art.nombre_articulo} - ${art.presentacion}`;
+        
+        item.onclick = (e) => {
+            e.preventDefault();
+            seleccionarArticulo(art);
+        };
+        
+        contenedor.appendChild(item);
+    });
+}
+
+
+function seleccionarArticulo(art) {
+    const inputBusqueda = document.getElementById("input-busqueda");
+    const contenedorSugerencias = document.getElementById("sugerencias-busqueda");
+    const detallePresentacion = document.getElementById("detalle-presentacion");
+
+    // 1. Ponemos el nombre en el input
+    inputBusqueda.value = art.nombre_articulo;
+
+    // 2. Limpiamos sugerencias
+    contenedorSugerencias.innerHTML = "";
+
+    // 3. Mostramos el detalle en el div de abajo (Punto 3 de tu solicitud)
+    // Aquí puedes combinar nombre, presentación y contenido_empaque si gustas
+    detallePresentacion.innerHTML = `
+        <div class="p-2 bg-light rounded border-start border-primary border-4">
+            <span class="fw-bold text-dark">Articulo:</span> ${art.nombre_articulo} <br>
+            <span class="fw-bold text-primary">Presentación:</span> ${art.presentacion} 
+            <small class="text-muted">(${art.contenido_empaque} unidades)</small>
+        </div>
+    `;
+
+    // Opcional: Guardar el ID para procesar la entrada después
+    inputBusqueda.dataset.idSeleccionado = art.id;
 }
