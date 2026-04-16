@@ -6,6 +6,8 @@ import { customFetch } from './sesion.js';
 // ===============================
 
 let articulosCache = []; // Variable global para la búsqueda
+let detalleFactura = []; // El "carrito" de artículos
+let articuloActual = null; // Guardará el objeto del artículo seleccionado en el buscador
 
 document.addEventListener("DOMContentLoaded", () => {  
 
@@ -49,6 +51,38 @@ function registrarEventos() {
             filtrarArticulos(texto);
         });
     }
+
+    document.getElementById("btn-agregar-item").addEventListener("click", () => {
+        const cant = document.getElementById("input-cantidad").value;
+        const costo = document.getElementById("input-costo").value;
+        const lote = document.getElementById("input-lote").value;
+        const vence = document.getElementById("input-caducidad").value;
+
+        // Validaciones básicas
+        if (!articuloActual || !cant || !costo) {
+            alert("Seleccione un artículo, cantidad y costo.");
+            return;
+        }
+
+        // Creamos el objeto del renglón
+        const item = {
+            articulo_id: articuloActual.id,
+            nombre: articuloActual.nombre_articulo,
+            presentacion: articuloActual.presentacion,
+            cantidad: parseInt(cant),
+            costo_unitario: parseFloat(costo),
+            lote: lote,
+            fecha_caducidad: vence,
+            subtotal: parseInt(cant) * parseFloat(costo)
+        };
+
+        // Lo agregamos a nuestra lista temporal
+        detalleFactura.push(item);
+        
+        // Actualizamos la tabla y limpiamos el área de captura
+        renderizarTablaTemporal();
+        limpiarFormularioCaptura();
+    });
 
 
 
@@ -163,6 +197,8 @@ function filtrarArticulos(termino) {
 
 
 function seleccionarArticulo(art) {
+
+    articuloActual = art;
     const inputBusqueda = document.getElementById("input-busqueda");
     const contenedorSugerencias = document.getElementById("sugerencias-busqueda");
     const detallePresentacion = document.getElementById("detalle-presentacion");
@@ -185,4 +221,67 @@ function seleccionarArticulo(art) {
 
     // Opcional: Guardar el ID para procesar la entrada después
     inputBusqueda.dataset.idSeleccionado = art.id;
+    console.log("Artículo listo para agregar:", articuloActual);
+}
+
+
+function renderizarTablaTemporal() {
+    const tabla = document.getElementById("listaTemporalEntrada");
+    tabla.innerHTML = ""; // Limpiar tabla
+    let granTotal = 0;
+
+    detalleFactura.forEach((item, index) => {
+        granTotal += item.subtotal;
+        
+        const fila = `
+            <tr class="small">
+                <td class="fw-bold">${item.nombre} <br> <small class="text-muted">${item.presentacion}</small></td>
+                <td>${item.cantidad}</td>
+                <td>${item.lote || 'N/A'}</td>
+                <td>${item.fecha_caducidad || 'N/A'}</td>
+                <td>$${item.subtotal.toLocaleString()}</td>
+                <td>
+                    <button class="btn btn-link btn-sm text-danger p-0" onclick="eliminarRenglon(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        tabla.insertAdjacentHTML('beforeend', fila);
+    });
+
+    // Actualizar el texto del Total en el footer del modal
+    document.querySelector(".h5.fw-bold.text-primary").textContent = `Total: $${granTotal.toLocaleString()}`;
+}
+
+
+async function enviarFacturaAPI() {
+    if (detalleFactura.length === 0) {
+        alert("La lista de artículos está vacía.");
+        return;
+    }
+
+    const payload = {
+        no_factura: document.getElementById("input-factura").value,
+        id_proveedor: document.getElementById("select-proveedor").value,
+        id_laboratorio: document.getElementById("select-lab").value,
+        items: detalleFactura, // Aquí va todo el array capturado
+        total_factura: detalleFactura.reduce((acc, item) => acc + item.subtotal, 0)
+    };
+
+    try {
+        // Usando tu función customFetch
+        const response = await customFetch('api/entradas', 'POST', payload);
+        
+        if(response.status === "success") {
+            alert("¡Factura guardada correctamente!");
+            // Limpiar todo y cerrar el modal
+            detalleFactura = [];
+            document.getElementById("formCapturaEntrada").reset();
+            bootstrap.Modal.getInstance(document.getElementById('modalEntrada')).hide();
+            refrescarVista(); 
+        }
+    } catch (error) {
+        console.error("Error al guardar:", error);
+    }
 }
