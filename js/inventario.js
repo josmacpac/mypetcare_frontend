@@ -1,4 +1,5 @@
 import { crearArticulo, obtenerArticulos, rellenarTablaArticulos } from "./articulos.js";
+import { customFetch } from './sesion.js';
 
 // ===============================
 // Inicialización
@@ -19,28 +20,24 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===============================
 
 function registrarEventos() {
-    /* const tabla = document.getElementById("tablaArticulos");
-    let id_seleccionado = ""; // Para guardar el ID cuando hagas clic en la tabla
+    // Listener del formulario
+    const formAlta = document.getElementById("formAltaArticulo");
+    if (formAlta) {
+        formAlta.addEventListener("submit", (e) => registrarNuevoArticulo(e));
+    }
 
-    // Delegación de eventos para la tabla
-    tabla.addEventListener("click", function (e) {
-        const btnDetalle = e.target.closest(".btn-ver-detalle");
-        const btnEditar = e.target.closest(".btn-editar");
-
-        if (btnDetalle) {
-            id_seleccionado = btnDetalle.dataset.id;
-            consultarDetalleArticulo(id_seleccionado);
-        }
-
-        if (btnEditar) {
-            id_seleccionado = btnEditar.dataset.id;
-            abrirModalEdicion(id_seleccionado);
-        }
-    }); */
-
-    // Listeners de formularios (Modales)
-    document.getElementById("formAltaArticulo").addEventListener("submit", (e) => registrarNuevoArticulo(e));
+    // Listener para el modal de Entradas
+    const modalEntrada = document.getElementById("modalEntrada"); 
     
+    if (modalEntrada) {
+        // El evento debe ser 'show.bs.modal'
+        modalEntrada.addEventListener("show.bs.modal", () => {
+            console.log("El modal se está abriendo ahora mismo...");
+            obtenerProveedoresAPI();
+        });
+    } else {
+        console.error("No se encontró el elemento con ID 'modalEntrada'");
+    }
 }
 
 // ===============================
@@ -70,4 +67,50 @@ async function registrarNuevoArticulo(e){
         } catch (error) {
             alert("❌ Error: " + error.message);
         }
+}
+
+
+async function obtenerProveedoresAPI() {
+    try {
+        const resultado = await customFetch('/api/proveedores', 'GET');
+        const resultadoLab = await customFetch('/api/laboratorio', 'GET')
+        
+        
+        imprimirProveedores(resultado.data, resultadoLab.data); 
+        
+        
+    } catch (error) {
+        console.error("Error al obtener proveedores/lab:", error);
+    }
+}
+
+
+function imprimirProveedores(listaProveedores, listaLaboratorio) {
+    const select = document.getElementById("select-proveedor");
+    const selectLab = document.getElementById("select-lab");
+    console.log("Datos recibidos:", listaProveedores, listaLaboratorio); // Revisa qué nombres de propiedades tienen los objetos
+    
+    if (!select) {
+        console.error("No se encontró el select con id 'select-proveedor'");
+        return;
+    }
+
+    select.innerHTML = '<option value="" selected disabled>Seleccione un proveedor</option>';
+    selectLab.innerHTML = '<option value="" selected disabled>Seleccione un Laboratorio</option>';
+
+    listaProveedores.forEach(prov => {
+        const option = document.createElement("option");
+        option.value = prov.id; 
+        option.textContent = prov.nombre_proveedor || prov.RFC || "Sin nombre"; 
+        select.appendChild(option);
+    });
+
+    listaLaboratorio.forEach(lab => {
+        const optionLab = document.createElement("option");
+        optionLab.value = lab.id; 
+        optionLab.textContent = lab.nombre_laboratorio || "Sin nombre"; 
+        selectLab.appendChild(optionLab);
+    });
+
+
 }

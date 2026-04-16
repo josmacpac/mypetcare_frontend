@@ -34,7 +34,7 @@ export async function obtenerArticulos() {
 
 // --- Lógica de Interfaz (Render) ---
 export function rellenarTablaArticulos(respuesta) {
-    const tbody = document.querySelector('table tbody');
+    const tbody = document.getElementById('tablaArticulos');
     tbody.innerHTML = ''; 
 
     const articulos = respuesta.data || [];

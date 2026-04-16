@@ -123,7 +123,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-custom align-middle">
+                    <table id="tablaLotes" class="table table-custom align-middle">
                         <thead>
                             <tr class="text-muted small">
                                 <th class="ps-4">SKU</th>
@@ -178,12 +178,12 @@
                         <input type="text" class="form-control form-control-sm border-0 bg-light" placeholder="No. Factura (Opcional)">
                     </div>
                     <div class="col-md-6">
-                        <select class="form-select form-select-sm border-0 bg-light">
-                            <option selected>Proveedor</option>
-                        </select>
+                         <select id="select-proveedor" class="form-select form-select-sm border-0 bg-light">
+                            <option selected disabled>Cargando proveedores...</option>
+                         </select>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-select form-select-sm border-0 bg-light">
+                        <select id="select-lab" class="form-select form-select-sm border-0 bg-light">
                             <option selected>Laboratorio</option>
                         </select>
                     </div>
