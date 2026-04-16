@@ -21,6 +21,7 @@ export async function crearArticulo(formElement) {
 }
 
 export async function obtenerArticulos() {
+    console.log("obteniendo articulos")
     try {
         // Usamos tu customFetch para traer los datos
         const data = await customFetch('/api/articulos', 'GET');
@@ -34,6 +35,8 @@ export async function obtenerArticulos() {
 
 // --- Lógica de Interfaz (Render) ---
 export function rellenarTablaArticulos(respuesta) {
+    console.log("rellenar tabla");
+    console.log(respuesta);
     const tbody = document.getElementById('tablaArticulos');
     tbody.innerHTML = ''; 
 

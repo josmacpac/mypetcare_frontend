@@ -1,16 +1,16 @@
 import { crearArticulo, obtenerArticulos, rellenarTablaArticulos } from "./articulos.js";
 import { customFetch } from './sesion.js';
-
 // ===============================
 // Inicialización
 // ===============================
+window.eliminarRenglon = eliminarRenglon;
 
 let articulosCache = []; // Variable global para la búsqueda
 let detalleFactura = []; // El "carrito" de artículos
 let articuloActual = null; // Guardará el objeto del artículo seleccionado en el buscador
 
 document.addEventListener("DOMContentLoaded", () => {  
-
+    
     // Cargar datos iniciales
     // cargarListaArticulos(); 
     
@@ -284,4 +284,36 @@ async function enviarFacturaAPI() {
     } catch (error) {
         console.error("Error al guardar:", error);
     }
+}
+
+
+/**
+ * Elimina un artículo del array temporal y refresca la tabla
+ * @param {number} index - La posición del elemento en el array detalleFactura
+ */
+function eliminarRenglon(index) {
+    // 1. Confirmación simple (opcional)
+    // if (!confirm("¿Deseas quitar este artículo de la lista?")) return;
+
+    // 2. Eliminamos el elemento del array usando su índice
+    detalleFactura.splice(index, 1);
+
+    // 3. Volvemos a dibujar la tabla para que se refleje el cambio y se recalcule el total
+    renderizarTablaTemporal();
+    
+    console.log("Artículo eliminado. Quedan: " + detalleFactura.length);
+}
+
+
+function limpiarFormularioCaptura() {
+    articuloActual = null; // Resetear la referencia
+    document.getElementById("input-busqueda").value = "";
+    document.getElementById("input-cantidad").value = "";
+    document.getElementById("input-costo").value = "";
+    document.getElementById("input-lote").value = "";
+    document.getElementById("input-caducidad").value = "";
+    document.getElementById("detalle-presentacion").innerHTML = '<p class="text-muted small">Articulo : presentacion : ---</p>';
+    
+    // Devolvemos el foco al buscador para el siguiente artículo
+    document.getElementById("input-busqueda").focus();
 }
