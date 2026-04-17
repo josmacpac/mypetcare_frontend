@@ -88,6 +88,32 @@ function registrarEventos() {
 
 }
 
+const btnGuardar = document.getElementById("guardarFactura");
+if (btnGuardar) {
+    btnGuardar.addEventListener("click", async () => {
+        // Validación rápida antes de procesar
+        if (detalleFactura.length === 0) {
+            alert("No hay artículos agregados a la factura.");
+            return;
+        }
+        
+        // Confirmación del usuario
+        if (confirm("¿Estás seguro de que deseas guardar esta factura y registrar la entrada?")) {
+            await ejecutarGuardadoFactura();
+        }
+    });
+}
+
+
+const btnCancelar = document.getElementById("btnCancelarEntrada");
+if (btnCancelar) {
+    btnCancelar.addEventListener("click", () => {
+        if (confirm("¿Estás seguro? Se perderán todos los artículos capturados en esta factura.")) {
+            limpiarTodoPostGuardado();
+        }
+    });
+}
+
 // ===============================
 // Funciones
 // ===============================
@@ -255,38 +281,6 @@ function renderizarTablaTemporal() {
 }
 
 
-async function enviarFacturaAPI() {
-    if (detalleFactura.length === 0) {
-        alert("La lista de artículos está vacía.");
-        return;
-    }
-
-    const payload = {
-        no_factura: document.getElementById("input-factura").value,
-        id_proveedor: document.getElementById("select-proveedor").value,
-        id_laboratorio: document.getElementById("select-lab").value,
-        items: detalleFactura, // Aquí va todo el array capturado
-        total_factura: detalleFactura.reduce((acc, item) => acc + item.subtotal, 0)
-    };
-
-    try {
-        // Usando tu función customFetch
-        const response = await customFetch('api/entradas', 'POST', payload);
-        
-        if(response.status === "success") {
-            alert("¡Factura guardada correctamente!");
-            // Limpiar todo y cerrar el modal
-            detalleFactura = [];
-            document.getElementById("formCapturaEntrada").reset();
-            bootstrap.Modal.getInstance(document.getElementById('modalEntrada')).hide();
-            refrescarVista(); 
-        }
-    } catch (error) {
-        console.error("Error al guardar:", error);
-    }
-}
-
-
 /**
  * Elimina un artículo del array temporal y refresca la tabla
  * @param {number} index - La posición del elemento en el array detalleFactura
@@ -316,4 +310,64 @@ function limpiarFormularioCaptura() {
     
     // Devolvemos el foco al buscador para el siguiente artículo
     document.getElementById("input-busqueda").focus();
+}
+
+async function ejecutarGuardadoFactura() {
+    // 1. Recolectamos datos de los elementos del DOM
+    const noFactura = document.querySelector('input[placeholder*="Factura"]').value;
+    const idProveedor = document.getElementById("select-proveedor").value;
+    const idLaboratorio = document.getElementById("select-lab").value;
+    const fechaCompra = document.getElementById("input-fecha-compra").value;
+    // Calculamos el monto total de la factura basándonos en el array temporal
+    const totalTexto = document.getElementById("total-factura-display").textContent;
+    const montoTotal = parseFloat(totalTexto.replace(/[^\d.]/g, ""));
+
+    // 2. Armamos el objeto exactamente como lo espera el endpoint de Flask
+   const payload = {
+        cabecera: {
+            no_factura: noFactura,
+            id_proveedor: idProveedor,
+            id_laboratorio: document.getElementById("select-lab").value, // Se mantiene por ahora
+            fecha_compra: fechaCompra,
+            total_factura: montoTotal // <--- Enviamos exactamente lo que el usuario ve
+        },
+        items: detalleFactura 
+    };
+    
+    try {
+        // 3. Enviamos usando tu función centralizada
+        const resultado = await customFetch('/api/entradas', 'POST', payload);
+
+        if (resultado.status === "success") {
+            alert("¡Factura guardada con éxito!");
+            
+            // 4. Limpieza post-guardado
+            limpiarTodoPostGuardado();
+        }
+    } catch (error) {
+        alert("Error al guardar la factura: " + error.message);
+    }
+}
+
+
+function limpiarTodoPostGuardado() {
+    // 1. Vaciar el array temporal (El "carrito")
+    detalleFactura = [];
+    
+    // 2. Limpiar la tabla visual del modal
+    renderizarTablaTemporal();
+    
+    // 3. Resetear el formulario (Inputs y Selects de cabecera)
+    const formulario = document.getElementById("formCapturaEntrada");
+    if (formulario) formulario.reset();
+    
+    // 4. Limpiar datos del artículo en edición
+    articuloActual = null;
+    document.getElementById("detalle-presentacion").innerHTML = "Articulo : presentacion : ---";
+    document.getElementById("sugerencias-busqueda").innerHTML = "";
+
+    // 5. Cerrar el modal
+    const modalElement = document.getElementById('modalEntrada');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    if (modalInstance) modalInstance.hide();
 }

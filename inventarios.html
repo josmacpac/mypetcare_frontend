@@ -134,27 +134,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="ps-4 fw-bold">750123456789</td>
-                                <td>Apoquel 16mg (20 tabletas)</td>
-                                <td><span class="badge bg-info-subtle text-info rounded-pill px-3">Medicamento</span></td>
-                                <td>
-                                    <span class="fw-bold text-danger">4 unidades</span> 
-                                    <small class="text-muted d-block" style="font-size: 0.7rem;">⚠️ Stock Mínimo: 5</small>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3">Detalle</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-4 fw-bold">750987654321</td>
-                                <td>Nupec Adulto 2kg</td>
-                                <td><span class="badge bg-success-subtle text-success rounded-pill px-3">Alimento</span></td>
-                                <td><span class="fw-bold">15 unidades</span></td>
-                                <td class="text-center">
-                                    <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 btn-detalle" data-id="750123">Detalle</button>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -180,6 +160,13 @@
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-receipt"></i></span>
             <input type="text" class="form-control border-start-0 shadow-sm" placeholder="No. Factura (Opcional)" style="background-color: #f8f9fa;">
         </div>
+        <div class="col-md-6">
+    <label class="form-label small fw-bold text-secondary">Fecha Factura</label>
+    <div class="input-group input-group-sm">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-calendar-event"></i></span>
+        <input type="date" id="input-fecha-compra" class="form-control border-start-0 shadow-sm" style="background-color: #f8f9fa;">
+    </div>
+</div>
     </div>
 
     <div class="col-md-6">
@@ -256,10 +243,10 @@
             </div>
             
             <div class="modal-footer border-0 pb-4 px-4 justify-content-between">
-                <div class="h5 fw-bold text-primary mb-0">Total: $0.00</div>
+                <div id="total-factura-display" class="h5 fw-bold text-primary mb-0">Total: $0.00</div>
                 <div>
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Guardar Todo</button>
+                    <button id="btnCancelarEntrada" type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="guardarFactura" type="button" class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">Guardar Todo</button>
                 </div>
             </div>
         </div>
