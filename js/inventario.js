@@ -148,22 +148,20 @@ async function registrarNuevoArticulo(e){
 async function obtenerProveedoresAPI() {
     try {
         const resultado = await customFetch('/api/proveedores', 'GET');
-        const resultadoLab = await customFetch('/api/laboratorio', 'GET')
         
         
-        imprimirProveedores(resultado.data, resultadoLab.data); 
+        imprimirProveedores(resultado.data); 
         
         
     } catch (error) {
-        console.error("Error al obtener proveedores/lab:", error);
+        console.error("Error al obtener proveedores", error);
     }
 }
 
 
-function imprimirProveedores(listaProveedores, listaLaboratorio) {
+function imprimirProveedores(listaProveedores) {
     const select = document.getElementById("select-proveedor");
-    const selectLab = document.getElementById("select-lab");
-    console.log("Datos recibidos:", listaProveedores, listaLaboratorio); // Revisa qué nombres de propiedades tienen los objetos
+    console.log("Datos recibidos:", listaProveedores); // Revisa qué nombres de propiedades tienen los objetos
     
     if (!select) {
         console.error("No se encontró el select con id 'select-proveedor'");
@@ -171,7 +169,6 @@ function imprimirProveedores(listaProveedores, listaLaboratorio) {
     }
 
     select.innerHTML = '<option value="" selected disabled>Seleccione un proveedor</option>';
-    selectLab.innerHTML = '<option value="" selected disabled>Seleccione un Laboratorio</option>';
 
     listaProveedores.forEach(prov => {
         const option = document.createElement("option");
@@ -180,12 +177,6 @@ function imprimirProveedores(listaProveedores, listaLaboratorio) {
         select.appendChild(option);
     });
 
-    listaLaboratorio.forEach(lab => {
-        const optionLab = document.createElement("option");
-        optionLab.value = lab.id; 
-        optionLab.textContent = lab.nombre_laboratorio || "Sin nombre"; 
-        selectLab.appendChild(optionLab);
-    });
 
 
 }
@@ -312,11 +303,49 @@ function limpiarFormularioCaptura() {
     document.getElementById("input-busqueda").focus();
 }
 
+function validarFactura() {
+    const campos = {
+        factura: document.getElementById("input-factura")?.value,
+        proveedor: document.getElementById("select-proveedor").value,
+        fecha: document.getElementById("input-fecha-compra").value
+    };
+
+    // 1. Validar Cabecera
+    if (!campos.proveedor || campos.proveedor === "" || isNaN(parseInt(campos.proveedor))) {
+        alert("⚠️ Por favor, selecciona un proveedor.");
+        return false;
+    }
+    if (!campos.fecha) {
+        alert("⚠️ La fecha de compra es obligatoria.");
+        return false;
+    }
+    if (!campos.factura) {
+        alert("⚠️ El número de factura es necesario (usa 'S/N' si no tiene).");
+        return false;
+    }
+
+    // 2. Validar que existan artículos
+    if (detalleFactura.length === 0) {
+        alert("⚠️ No puedes guardar una factura sin artículos. Agrega al menos uno.");
+        return false;
+    }
+
+    // 3. Validar consistencia de los artículos (opcional pero recomendado)
+    const itemsInvalidos = detalleFactura.some(item => !item.cantidad || item.cantidad <= 0 || !item.costo_unitario);
+    if (itemsInvalidos) {
+        alert("⚠️ Algunos artículos en la lista tienen cantidad o costo inválido.");
+        return false;
+    }
+
+    return true; // Todo está bien
+}
+
 async function ejecutarGuardadoFactura() {
+
+    if (!validarFactura()) return;
     // 1. Recolectamos datos de los elementos del DOM
     const noFactura = document.querySelector('input[placeholder*="Factura"]').value;
     const idProveedor = document.getElementById("select-proveedor").value;
-    const idLaboratorio = document.getElementById("select-lab").value;
     const fechaCompra = document.getElementById("input-fecha-compra").value;
     // Calculamos el monto total de la factura basándonos en el array temporal
     const totalTexto = document.getElementById("total-factura-display").textContent;
@@ -327,7 +356,6 @@ async function ejecutarGuardadoFactura() {
         cabecera: {
             no_factura: noFactura,
             id_proveedor: idProveedor,
-            id_laboratorio: document.getElementById("select-lab").value, // Se mantiene por ahora
             fecha_compra: fechaCompra,
             total_factura: montoTotal // <--- Enviamos exactamente lo que el usuario ve
         },
