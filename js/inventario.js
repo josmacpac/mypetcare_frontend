@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     registrarEventos();
     refrescarVista();
+    consultaExistencia();
 });
 
 
@@ -398,4 +399,45 @@ function limpiarTodoPostGuardado() {
     const modalElement = document.getElementById('modalEntrada');
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
     if (modalInstance) modalInstance.hide();
+}
+
+let datosInventario = [];
+
+async function consultaExistencia() {
+    try {
+      
+        datosInventario = await customFetch('/api/existencias'); 
+        
+        renderizarTablaExistencia(datosInventario);
+    } catch (error) {
+        // El error ya viene manejado por el catch de customFetch
+        alert("No se pudo cargar el inventario: " + error.message);
+    }
+}
+
+function renderizarTablaExistencia(datos) {
+    const tbody = document.getElementById("tablaExistencias");
+    tbody.innerHTML = '';
+
+    datos.forEach(item => {
+        // Lógica visual: si hay 0 existencia, mostrar 'Agotado'
+        const stockDisplay = item.existencia === 0 ? 'AGOTADO' : item.existencia;
+        const stockClass = item.existencia <= 5 ? 'fw-bold text-danger' : '';
+
+        const fila = `
+            <tr>
+                <td>${item.sku}</td>
+                <td>${item.articulo}</td>
+                <td><span class="badge bg-secondary">${item.categoria}</span></td>
+                <td class="${stockClass}">${stockDisplay}</td>
+                <td>$${item.precio.toLocaleString('es-MX')}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.sku})">
+                        🔍 Lotes
+                    </button>
+                </td>
+            </tr>
+        `;
+        tbody.insertAdjacentHTML('beforeend', fila);
+    });
 }
