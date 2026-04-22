@@ -1,4 +1,5 @@
 import { crearArticulo, obtenerArticulos, rellenarTablaArticulos } from "./articulos.js";
+import { filtrarLista } from './utils.js';
 import { customFetch } from './sesion.js';
 // ===============================
 // Inicialización
@@ -17,6 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
     registrarEventos();
     refrescarVista();
     consultaExistencia();
+
+    const inputBusqueda = document.getElementById("input-busqueda");
+        
+        if (inputBusqueda) {
+            inputBusqueda.addEventListener("input", (e) => {
+                const texto = e.target.value;
+                
+                // Filtramos usando la variable que ya tienes llena
+                const filtrados = filtrarLista(datosInventario, texto);
+                
+                // Dibujamos la tabla con los resultados
+                // IMPORTANTE: Pasa 'filtrados' directamente
+                renderizarTablaExistencia(filtrados); 
+            });
+        }
 });
 
 
@@ -40,9 +56,7 @@ function registrarEventos() {
             console.log("El modal se está abriendo ahora mismo...");
             obtenerProveedoresAPI();
         });
-    } else {
-        console.error("No se encontró el elemento con ID 'modalEntrada'");
-    }
+    } 
 
     const inputBusqueda = document.getElementById("input-busqueda");
     

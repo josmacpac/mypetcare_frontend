@@ -1,4 +1,31 @@
+import { filtrarLista } from './utils.js';
 import { customFetch } from './sesion.js';
+
+let articulosCache = [];
+
+document.addEventListener("DOMContentLoaded", async () => {
+    console.log("DOM Cargado en articulos.js");
+    
+   
+    await refrescarVistaArticulos();
+    
+    const inputBusqueda = document.getElementById("input-busqueda");
+    
+    if (inputBusqueda) {
+        inputBusqueda.addEventListener("input", (e) => {
+            const texto = e.target.value;
+            
+            // Filtramos usando la variable que ya tienes llena
+            const filtrados = filtrarLista(articulosCache, texto);
+            
+            // Dibujamos la tabla con los resultados
+            // IMPORTANTE: Pasa 'filtrados' directamente
+            rellenarTablaArticulos(filtrados); 
+        });
+    }
+
+});
+
 
 export async function crearArticulo(formElement) {
     // 1. Extraemos y convertimos los datos en un solo lugar
@@ -20,27 +47,39 @@ export async function crearArticulo(formElement) {
     return await customFetch('/api/articulos', 'POST', articulo);
 }
 
+export async function refrescarVistaArticulos() {
+    const respuesta = await obtenerArticulos();
+    
+    // Validamos que el elemento exista antes de intentar rellenarlo
+    if (document.getElementById('tablaArticulos')) {
+        rellenarTablaArticulos(respuesta);
+    }
+}   
+
 export async function obtenerArticulos() {
     console.log("obteniendo articulos")
     try {
         // Usamos tu customFetch para traer los datos
         const data = await customFetch('/api/articulos', 'GET');
         console.log(data);
+        articulosCache = data.data || data;
+        console.log(articulosCache);
         return data;
     } catch (error) {
         console.error("Error al obtener artículos:", error);
         return [];
     }
-}
+} 
 
 // --- Lógica de Interfaz (Render) ---
 export function rellenarTablaArticulos(respuesta) {
     console.log("rellenar tabla");
-    console.log(respuesta);
+   
     const tbody = document.getElementById('tablaArticulos');
+    if (!tbody) return; // Seguridad extra
     tbody.innerHTML = ''; 
 
-    const articulos = respuesta.data || [];
+   const articulos = respuesta.data || respuesta;
 
     articulos.forEach(art => {
         const fila = document.createElement('tr');
