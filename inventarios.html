@@ -389,101 +389,33 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalDetalleArticulo" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            
-            <div class="modal-header border-0 pt-4 px-4 bg-primary text-white" style="border-radius: 20px 20px 0 0;">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="bg-white p-2 rounded-3">
-                        <i class="fas fa-pills text-primary fs-4"></i>
-                    </div>
-                    <div>
-                        <small class="opacity-75 fw-bold">SKU: 750123456789</small>
-                        <h5 class="modal-title fw-bold" id="modalDetalleLabel">Apoquel 16mg (20 tabletas)</h5>
-                    </div>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            
-            <div class="modal-body p-4">
-                <div class="row g-3 mb-4">
-                    <div class="col-md-12">
-                        <h6 class="fw-bold text-muted mb-3 small"><i class="fas fa-info-circle me-2"></i> DATOS GENERALES</h6>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Categoría</label>
-                        <select class="form-select bg-light border-0 py-2">
-                            <option>Medicamentos</option>
-                            <option>Alimentos</option>
-                            <option>Cirugía</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold">Precio Venta ($)</label>
-                        <input type="number" class="form-control bg-light border-0 py-2" value="850.00">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small fw-bold text-danger">Stock Mínimo</label>
-                        <input type="number" class="form-control bg-light border-0 py-2" value="5">
-                    </div>
-                </div>
-
-                <hr class="opacity-10">
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold text-muted mb-0 small"><i class="fas fa-boxes me-2"></i> EXISTENCIAS POR LOTE</h6>
-                    <span class="badge bg-primary-subtle text-primary rounded-pill">Total: 10 unidades</span>
-                </div>
-
-                <div class="table-responsive border rounded-4">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr class="text-muted" style="font-size: 0.75rem;">
-                                <th class="ps-3">LOTE</th>
-                                <th>CADUCIDAD</th>
-                                <th>EXISTENCIA</th>
-                                <th>ESTADO</th>
-                                <th class="text-end pe-3">ACCIÓN</th>
-                            </tr>
-                        </thead>
-                        <tbody style="font-size: 0.85rem;">
-                            <tr>
-                                <td class="ps-3 fw-bold">L-4055</td>
-                                <td>15/Abr/2026</td>
-                                <td><span class="fw-bold">8 pzas</span></td>
-                                <td><span class="badge bg-success-subtle text-success rounded-pill">Vigente</span></td>
-                                <td class="text-end pe-3">
-                                    <button class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm" 
-        onclick="abrirAjuste('L-4055', 8)">
-    <i class="fas fa-sync-alt me-1"></i> Ajustar
-</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="ps-3 fw-bold">L-3990</td>
-                                <td>20/Mar/2026</td>
-                                <td><span class="fw-bold">2 pzas</span></td>
-                                <td><span class="badge bg-warning-subtle text-warning rounded-pill">Próximo</span></td>
-                                <td class="text-end pe-3">
-                                    <button class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#modalAjusteInventario">
-                                        <i class="fas fa-sync-alt me-1"></i> Ajustar
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm">Guardar Cambios</button>
-            </div>
+<div class="modal fade" id="modalLotes" tabindex="-1" aria-labelledby="modalLotesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalLotesLabel">📋 Desglose de Lotes</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Lote</th>
+                  <th>Caducidad</th>
+                  <th class="text-center">Existencia</th>
+                </tr>
+              </thead>
+              <tbody id="tablaLotesCuerpo">
+                </tbody>
+            </table>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="modal fade" id="modalAjusteInventario" tabindex="-1" aria-hidden="true">

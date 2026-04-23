@@ -53,7 +53,7 @@ function registrarEventos() {
     if (modalEntrada) {
         // El evento debe ser 'show.bs.modal'
         modalEntrada.addEventListener("show.bs.modal", () => {
-            console.log("El modal se está abriendo ahora mismo...");
+            
             obtenerProveedoresAPI();
         });
     } 
@@ -142,7 +142,7 @@ async function refrescarVista() {
 
 async function registrarNuevoArticulo(e){
     e.preventDefault();
-    console.log("Formulario detenido, iniciando envío...");
+    
     try {
             // Llamamos directamente a la función del servicio pasando el formulario
             await crearArticulo(e.target);
@@ -176,8 +176,7 @@ async function obtenerProveedoresAPI() {
 
 function imprimirProveedores(listaProveedores) {
     const select = document.getElementById("select-proveedor");
-    console.log("Datos recibidos:", listaProveedores); // Revisa qué nombres de propiedades tienen los objetos
-    
+        
     if (!select) {
         console.error("No se encontró el select con id 'select-proveedor'");
         return;
@@ -253,7 +252,6 @@ function seleccionarArticulo(art) {
 
     // Opcional: Guardar el ID para procesar la entrada después
     inputBusqueda.dataset.idSeleccionado = art.id;
-    console.log("Artículo listo para agregar:", articuloActual);
 }
 
 
@@ -301,7 +299,6 @@ function eliminarRenglon(index) {
     // 3. Volvemos a dibujar la tabla para que se refleje el cambio y se recalcule el total
     renderizarTablaTemporal();
     
-    console.log("Artículo eliminado. Quedan: " + detalleFactura.length);
 }
 
 
@@ -421,7 +418,7 @@ async function consultaExistencia() {
     try {
       
         datosInventario = await customFetch('/api/existencias'); 
-        
+        console.log(datosInventario);
         renderizarTablaExistencia(datosInventario);
     } catch (error) {
         // El error ya viene manejado por el catch de customFetch
@@ -446,7 +443,7 @@ function renderizarTablaExistencia(datos) {
                 <td class="${stockClass}">${stockDisplay}</td>
                 <td>$${item.precio.toLocaleString('es-MX')}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.sku})">
+                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.id})">
                         🔍 Lotes
                     </button>
                 </td>
@@ -455,3 +452,36 @@ function renderizarTablaExistencia(datos) {
         tbody.insertAdjacentHTML('beforeend', fila);
     });
 }
+
+async function verDetalleLotes(idArticulo) {
+    try {
+        const lotes = await customFetch(`/api/existencias/lotes/${idArticulo}`);
+        
+        const tbodyLotes = document.getElementById("tablaLotesCuerpo");
+        tbodyLotes.innerHTML = ''; 
+
+        if (!lotes || lotes.length === 0) {
+            tbodyLotes.innerHTML = '<tr><td colspan="3" class="text-center">No hay lotes con existencias.</td></tr>';
+        } else {
+            lotes.forEach(l => {
+                const fecha = new Date(l.fecha_caducidad).toLocaleDateString('es-MX');
+                const fila = `
+                    <tr>
+                        <td><span class="fw-bold">${l.lote}</span></td>
+                        <td>${fecha}</td>
+                        <td class="text-center">${l.cantidad_actual}</td>
+                    </tr>
+                `;
+                tbodyLotes.insertAdjacentHTML('beforeend', fila);
+            });
+        }
+
+        const modalElement = document.getElementById('modalLotes');
+        const modalLotes = new bootstrap.Modal(modalElement);
+        modalLotes.show();
+
+    } catch (error) {
+        console.error("Error al cargar detalles de lotes:", error);
+    }
+}
+window.verDetalleLotes = verDetalleLotes;

@@ -4,7 +4,7 @@ import { customFetch } from './sesion.js';
 let articulosCache = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log("DOM Cargado en articulos.js");
+    
     
    
     await refrescarVistaArticulos();
@@ -57,13 +57,12 @@ export async function refrescarVistaArticulos() {
 }   
 
 export async function obtenerArticulos() {
-    console.log("obteniendo articulos")
     try {
         // Usamos tu customFetch para traer los datos
         const data = await customFetch('/api/articulos', 'GET');
-        console.log(data);
+        
         articulosCache = data.data || data;
-        console.log(articulosCache);
+        
         return data;
     } catch (error) {
         console.error("Error al obtener artículos:", error);
@@ -73,7 +72,7 @@ export async function obtenerArticulos() {
 
 // --- Lógica de Interfaz (Render) ---
 export function rellenarTablaArticulos(respuesta) {
-    console.log("rellenar tabla");
+    
    
     const tbody = document.getElementById('tablaArticulos');
     if (!tbody) return; // Seguridad extra
