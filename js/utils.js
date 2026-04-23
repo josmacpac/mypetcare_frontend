@@ -46,3 +46,53 @@ export function renderizarTablaExistencia(datos) {
         tbody.insertAdjacentHTML('beforeend', fila);
     });
 }
+
+
+export async function refrescarVista() {
+    const listaArticulos = await obtenerArticulos();
+    articulosCache = listaArticulos.data || listaArticulos;// Guardamos una copia para la búsqueda rápida
+    rellenarTablaArticulos(listaArticulos);
+}
+
+export async function obtenerProveedoresAPI() {
+    try {
+        const resultado = await customFetch('/api/proveedores', 'GET');
+        
+        
+        imprimirProveedores(resultado.data); 
+        
+        
+    } catch (error) {
+        console.error("Error al obtener proveedores", error);
+    }
+}
+
+
+export function renderizarTablaTemporal() {
+    const tabla = document.getElementById("listaTemporalEntrada");
+    tabla.innerHTML = ""; // Limpiar tabla
+    let granTotal = 0;
+
+    detalleFactura.forEach((item, index) => {
+        granTotal += item.subtotal;
+        
+        const fila = `
+            <tr class="small">
+                <td class="fw-bold">${item.nombre} <br> <small class="text-muted">${item.presentacion}</small></td>
+                <td>${item.cantidad}</td>
+                <td>${item.lote || 'N/A'}</td>
+                <td>${item.fecha_caducidad || 'N/A'}</td>
+                <td>$${item.subtotal.toLocaleString()}</td>
+                <td>
+                    <button class="btn btn-link btn-sm text-danger p-0" onclick="eliminarRenglon(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        tabla.insertAdjacentHTML('beforeend', fila);
+    });
+
+    // Actualizar el texto del Total en el footer del modal
+    document.querySelector(".h5.fw-bold.text-primary").textContent = `Total: $${granTotal.toLocaleString()}`;
+}

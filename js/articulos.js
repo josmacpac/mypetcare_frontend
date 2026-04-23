@@ -112,3 +112,53 @@ export function rellenarTablaArticulos(respuesta) {
         tbody.appendChild(fila);
     });
 }
+
+export async function registrarNuevoArticulo(e){
+    e.preventDefault();
+    
+    try {
+            // Llamamos directamente a la función del servicio pasando el formulario
+            await crearArticulo(e.target);
+            
+            alert("✅ Artículo registrado");
+            e.target.reset();
+            
+            // Cerrar modal (puedes usar una función genérica)
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalAltaArticulo'));
+            if (modal) modal.hide();
+            
+        } catch (error) {
+            alert("❌ Error: " + error.message);
+        }
+}
+
+export function filtrarArticulos(termino) {
+    const contenedor = document.getElementById("sugerencias-busqueda");
+    
+    if (!termino) {
+        contenedor.innerHTML = "";
+        return;
+    }
+
+    // Filtramos en la variable global que llenamos en refrescarVista
+    const coincidencias = articulosCache.filter(art => 
+        art.nombre_articulo.toLowerCase().includes(termino)
+    );
+
+    contenedor.innerHTML = "";
+
+    coincidencias.slice(0, 5).forEach(art => {
+        const item = document.createElement("button");
+        item.classList.add("list-group-item", "list-group-item-action", "border-0", "shadow-sm", "mb-1");
+        
+        // Mostramos Nombre y Presentación en la sugerencia
+        item.textContent = `${art.nombre_articulo} - ${art.presentacion}`;
+        
+        item.onclick = (e) => {
+            e.preventDefault();
+            seleccionarArticulo(art);
+        };
+        
+        contenedor.appendChild(item);
+    });
+}

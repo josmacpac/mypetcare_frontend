@@ -1,5 +1,5 @@
-import { crearArticulo, obtenerArticulos, rellenarTablaArticulos } from "./articulos.js";
-import { filtrarLista, renderizarTablaExistencia } from './utils.js';
+import { crearArticulo, obtenerArticulos, rellenarTablaArticulos, registrarNuevoArticulo, filtrarArticulos } from "./articulos.js";
+import { filtrarLista, renderizarTablaExistencia, refrescarVista, obtenerProveedoresAPI, renderizarTablaTemporal} from './utils.js';
 import { customFetch } from './sesion.js';
 
 // ===============================
@@ -134,47 +134,6 @@ if (btnCancelar) {
 // Funciones
 // ===============================
 
-async function refrescarVista() {
-    const listaArticulos = await obtenerArticulos();
-    articulosCache = listaArticulos.data || listaArticulos;// Guardamos una copia para la búsqueda rápida
-    rellenarTablaArticulos(listaArticulos);
-}
-
-
-async function registrarNuevoArticulo(e){
-    e.preventDefault();
-    
-    try {
-            // Llamamos directamente a la función del servicio pasando el formulario
-            await crearArticulo(e.target);
-            
-            alert("✅ Artículo registrado");
-            e.target.reset();
-            
-            // Cerrar modal (puedes usar una función genérica)
-            const modal = bootstrap.Modal.getInstance(document.getElementById('modalAltaArticulo'));
-            if (modal) modal.hide();
-            
-        } catch (error) {
-            alert("❌ Error: " + error.message);
-        }
-}
-
-
-async function obtenerProveedoresAPI() {
-    try {
-        const resultado = await customFetch('/api/proveedores', 'GET');
-        
-        
-        imprimirProveedores(resultado.data); 
-        
-        
-    } catch (error) {
-        console.error("Error al obtener proveedores", error);
-    }
-}
-
-
 function imprimirProveedores(listaProveedores) {
     const select = document.getElementById("select-proveedor");
         
@@ -195,38 +154,6 @@ function imprimirProveedores(listaProveedores) {
 
 
 }
-
-function filtrarArticulos(termino) {
-    const contenedor = document.getElementById("sugerencias-busqueda");
-    
-    if (!termino) {
-        contenedor.innerHTML = "";
-        return;
-    }
-
-    // Filtramos en la variable global que llenamos en refrescarVista
-    const coincidencias = articulosCache.filter(art => 
-        art.nombre_articulo.toLowerCase().includes(termino)
-    );
-
-    contenedor.innerHTML = "";
-
-    coincidencias.slice(0, 5).forEach(art => {
-        const item = document.createElement("button");
-        item.classList.add("list-group-item", "list-group-item-action", "border-0", "shadow-sm", "mb-1");
-        
-        // Mostramos Nombre y Presentación en la sugerencia
-        item.textContent = `${art.nombre_articulo} - ${art.presentacion}`;
-        
-        item.onclick = (e) => {
-            e.preventDefault();
-            seleccionarArticulo(art);
-        };
-        
-        contenedor.appendChild(item);
-    });
-}
-
 
 function seleccionarArticulo(art) {
 
@@ -255,35 +182,6 @@ function seleccionarArticulo(art) {
     inputBusqueda.dataset.idSeleccionado = art.id;
 }
 
-
-function renderizarTablaTemporal() {
-    const tabla = document.getElementById("listaTemporalEntrada");
-    tabla.innerHTML = ""; // Limpiar tabla
-    let granTotal = 0;
-
-    detalleFactura.forEach((item, index) => {
-        granTotal += item.subtotal;
-        
-        const fila = `
-            <tr class="small">
-                <td class="fw-bold">${item.nombre} <br> <small class="text-muted">${item.presentacion}</small></td>
-                <td>${item.cantidad}</td>
-                <td>${item.lote || 'N/A'}</td>
-                <td>${item.fecha_caducidad || 'N/A'}</td>
-                <td>$${item.subtotal.toLocaleString()}</td>
-                <td>
-                    <button class="btn btn-link btn-sm text-danger p-0" onclick="eliminarRenglon(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-        tabla.insertAdjacentHTML('beforeend', fila);
-    });
-
-    // Actualizar el texto del Total en el footer del modal
-    document.querySelector(".h5.fw-bold.text-primary").textContent = `Total: $${granTotal.toLocaleString()}`;
-}
 
 
 /**
@@ -427,33 +325,6 @@ async function consultaExistencia() {
     }
 }
 
-/* function renderizarTablaExistencia(datos) {
-    const tbody = document.getElementById("tablaExistencias");
-    tbody.innerHTML = '';
-
-    datos.forEach(item => {
-        // Lógica visual: si hay 0 existencia, mostrar 'Agotado'
-        const stockDisplay = item.existencia === 0 ? 'AGOTADO' : item.existencia;
-        const stockClass = item.existencia <= 5 ? 'fw-bold text-danger' : '';
-
-        const fila = `
-            <tr>
-                <td>${item.sku}</td>
-                <td>${item.articulo}</td>
-                <td><span class="badge bg-secondary">${item.categoria}</span></td>
-                <td class="${stockClass}">${stockDisplay}</td>
-                <td>$${item.precio.toLocaleString('es-MX')}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.id})">
-                        🔍 Lotes
-                    </button>
-                </td>
-            </tr>
-        `;
-        tbody.insertAdjacentHTML('beforeend', fila);
-    });
-}
- */
 async function verDetalleLotes(idArticulo) {
     try {
         const lotes = await customFetch(`/api/existencias/lotes/${idArticulo}`);
