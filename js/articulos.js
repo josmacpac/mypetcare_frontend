@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+
+
 export async function crearArticulo(formElement) {
     // 1. Extraemos y convertimos los datos en un solo lugar
     const formData = new FormData(formElement);

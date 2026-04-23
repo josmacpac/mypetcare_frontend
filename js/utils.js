@@ -1,3 +1,7 @@
+import { customFetch } from './sesion.js';
+
+
+
 export function filtrarLista(lista, termino) {
     const busqueda = termino.toLowerCase().trim();
     if (!busqueda) return lista;
@@ -66,6 +70,7 @@ export async function obtenerProveedoresAPI() {
         console.error("Error al obtener proveedores", error);
     }
 }
+
 
 
 export function renderizarTablaTemporal() {
