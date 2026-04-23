@@ -1,203 +1,178 @@
-function imprimirProveedores(listaProveedores) {
-    const select = document.getElementById("select-proveedor");
-        
-    if (!select) {
-        console.error("No se encontró el select con id 'select-proveedor'");
-        return;
-    }
+import { obtenerArticulos } from "./articulos.js";
+import {obtenerProveedoresAPI} from "./utils.js";
 
-    select.innerHTML = '<option value="" selected disabled>Seleccione un proveedor</option>';
+console.log("✅ Archivo modal.js cargado correctamente");
 
-    listaProveedores.forEach(prov => {
-        const option = document.createElement("option");
-        option.value = prov.id; 
-        option.textContent = prov.nombre_proveedor || prov.RFC || "Sin nombre"; 
-        select.appendChild(option);
-    });
+let articuloSeleccionado = null;
+let articulosCache = [];
+let proveedorSeleccionado = null;
 
-
-
-}
-
-function validarFactura() {
-    const campos = {
-        factura: document.getElementById("input-factura")?.value,
-        proveedor: document.getElementById("select-proveedor").value,
-        fecha: document.getElementById("input-fecha-compra").value
-    };
-
-    // 1. Validar Cabecera
-    if (!campos.proveedor || campos.proveedor === "" || isNaN(parseInt(campos.proveedor))) {
-        alert("⚠️ Por favor, selecciona un proveedor.");
-        return false;
-    }
-    if (!campos.fecha) {
-        alert("⚠️ La fecha de compra es obligatoria.");
-        return false;
-    }
-    if (!campos.factura) {
-        alert("⚠️ El número de factura es necesario (usa 'S/N' si no tiene).");
-        return false;
-    }
-
-    // 2. Validar que existan artículos
-    if (detalleFactura.length === 0) {
-        alert("⚠️ No puedes guardar una factura sin artículos. Agrega al menos uno.");
-        return false;
-    }
-
-    // 3. Validar consistencia de los artículos (opcional pero recomendado)
-    const itemsInvalidos = detalleFactura.some(item => !item.cantidad || item.cantidad <= 0 || !item.costo_unitario);
-    if (itemsInvalidos) {
-        alert("⚠️ Algunos artículos en la lista tienen cantidad o costo inválido.");
-        return false;
-    }
-
-    return true; // Todo está bien
-}
-
-async function ejecutarGuardadoFactura() {
-
-    if (!validarFactura()) return;
-    // 1. Recolectamos datos de los elementos del DOM
-    const noFactura = document.querySelector('input[placeholder*="Factura"]').value;
-    const idProveedor = document.getElementById("select-proveedor").value;
-    const fechaCompra = document.getElementById("input-fecha-compra").value;
-    // Calculamos el monto total de la factura basándonos en el array temporal
-    const totalTexto = document.getElementById("total-factura-display").textContent;
-    const montoTotal = parseFloat(totalTexto.replace(/[^\d.]/g, ""));
-
-    // 2. Armamos el objeto exactamente como lo espera el endpoint de Flask
-   const payload = {
-        cabecera: {
-            no_factura: noFactura,
-            id_proveedor: idProveedor,
-            fecha_compra: fechaCompra,
-            total_factura: montoTotal // <--- Enviamos exactamente lo que el usuario ve
-        },
-        items: detalleFactura 
-    };
+   // 1. Referencias de los elementos de la Cabecera
+    const inputFactura = document.getElementById('input-factura');
+    const inputFechaCompra = document.getElementById('input-fecha-compra');
     
-    try {
-        // 3. Enviamos usando tu función centralizada
-        const resultado = await customFetch('/api/entradas', 'POST', payload);
 
-        if (resultado.status === "success") {
-            alert("¡Factura guardada con éxito!");
+    // 2. Referencias de Búsqueda y Detalle de Artículo
+    const inputBusqueda = document.getElementById('input-busqueda-articulo');
+    const sugerenciasBusqueda = document.getElementById('sugerencias-busqueda');
+    const detallePresentacion = document.getElementById('detalle-presentacion');
+
+    // 3. Referencias de Captura de Ítems
+    const inputCantidad = document.getElementById('input-cantidad');
+    const inputCosto = document.getElementById('input-costo');
+    const inputLote = document.getElementById('input-lote');
+    const inputCaducidad = document.getElementById('input-caducidad');
+    const btnAgregarItem = document.getElementById('btn-agregar-item');
+
+    // 4. Referencias de la Tabla y Totales
+    const tablaTemporal = document.getElementById('listaTemporalEntrada');
+    const displayTotal = document.getElementById('total-factura-display');
+
+    // 5. Botones de Acción Final
+    const btnGuardarTodo = document.getElementById('guardarFactura');
+    const modalEntrada = document.getElementById('modalEntrada');
+
+    // --- ASIGNACIÓN DE LISTENERS ---
+
+    // Búsqueda en tiempo real (Autocomplete)
+    if (inputBusqueda) {
+    inputBusqueda.addEventListener('input', async (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        console.log("🔍 Escribiendo en buscador:", query);
+        if (query.length < 2) {
+            sugerenciasBusqueda.innerHTML = '';
+            return;
+        }
+
+        if (articulosCache.length === 0) {
+            console.log("🔌 Llamando a obtenerArticulos()...");
+            const data = await obtenerArticulos();
+            articulosCache = data.data || data;
+            console.log("📦 Cache cargado con:", articulosCache.length, "artículos");
+            console.log(articulosCache)
+        }
+
+        const filtrados = articulosCache.filter(art => 
+            art.nombre_articulo.toLowerCase().includes(query)
+        ).slice(0, 5);
+
+        renderizarSugerencias(filtrados, { sugerenciasBusqueda, inputBusqueda, detallePresentacion });
+    });
+}
+
+    // Detectar selección de una sugerencia (Delegación de eventos)
+   if (sugerenciasBusqueda) {
+    sugerenciasBusqueda.addEventListener('click', (e) => {
+        console.log("🖱️ Clic detectado en contenedor de sugerencias");
+        const item = e.target.closest('.list-group-item');
+        
+        if (item) {
+            // Obtenemos el objeto del cache comparando nombres o IDs
+            const nombreArt = item.querySelector('.fw-bold').innerText;
+            const articulo = articulosCache.find(a => a.nombre_articulo === nombreArt);
             
-            // 4. Limpieza post-guardado
-            limpiarTodoPostGuardado();
+            console.log("✅ Artículo seleccionado:", articulo);
+            seleccionarArticulo(articulo);
         }
-    } catch (error) {
-        alert("Error al guardar la factura: " + error.message);
-    }
+    });
 }
 
+    // Botón para agregar artículo a la lista temporal
+    btnAgregarItem.addEventListener('click', () => {
+        console.log('Validando y agregando ítem a la tabla...');
+        // Aquí validarías que los campos no estén vacíos antes de insertar en la tabla
+    });
 
-function limpiarTodoPostGuardado() {
-    // 1. Vaciar el array temporal (El "carrito")
-    detalleFactura = [];
-    
-    // 2. Limpiar la tabla visual del modal
-    renderizarTablaTemporal();
-    
-    // 3. Resetear el formulario (Inputs y Selects de cabecera)
-    const formulario = document.getElementById("formCapturaEntrada");
-    if (formulario) formulario.reset();
-    
-    // 4. Limpiar datos del artículo en edición
-    articuloActual = null;
-    document.getElementById("detalle-presentacion").innerHTML = "Articulo : presentacion : ---";
-    document.getElementById("sugerencias-busqueda").innerHTML = "";
+    // Eliminar ítem de la tabla (Delegación de eventos)
+    tablaTemporal.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-eliminar')) {
+            const fila = e.target.closest('tr');
+            fila.remove();
+            console.log('Ítem eliminado de la lista');
+            // Aquí llamarías a una función para recalcular el total
+        }
+    });
 
-    // 5. Cerrar el modal
-    const modalElement = document.getElementById('modalEntrada');
-    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-    if (modalInstance) modalInstance.hide();
+    // Botón Guardar Factura Final
+    btnGuardarTodo.addEventListener('click', () => {
+        console.log('Iniciando proceso de guardado de toda la factura...');
+        // Recolectar datos de cabecera + array de la tabla y enviar al servidor
+    });
+
+    // Limpiar formulario cuando el modal se cierre
+    modalEntrada.addEventListener('hidden.bs.modal', () => {
+        console.log('Limpiando formulario...');
+        document.getElementById('formCapturaEntrada').reset();
+        tablaTemporal.innerHTML = '';
+        displayTotal.innerText = 'Total: $0.00';
+    });
+
+    modalEntrada.addEventListener('show.bs.modal', () => {
+        console.log("se abrio modal de entrada");
+     cargarProveedores();
+});
+
+
+
+
+    /* FUNCIONES */
+
+function renderizarSugerencias(articulos) {
+    sugerenciasBusqueda.innerHTML = '';
+    articulos.forEach(art => {
+        const btn = document.createElement('button');
+        btn.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+        btn.type = 'button';
+        // Guardamos el ID en un dataset por si lo necesitas
+        btn.dataset.id = art.id; 
+        btn.innerHTML = `
+            <div>
+                <div class="fw-bold text-dark">${art.nombre_articulo}</div>
+            </div>
+      
+        `;
+        sugerenciasBusqueda.appendChild(btn);
+    });
 }
 
-    document.getElementById("btn-agregar-item").addEventListener("click", () => {
-        const cant = document.getElementById("input-cantidad").value;
-        const costo = document.getElementById("input-costo").value;
-        const lote = document.getElementById("input-lote").value;
-        const vence = document.getElementById("input-caducidad").value;
+function seleccionarArticulo(articulo) {
+    if (!articulo) return;
+    articuloSeleccionado = articulo;
+    
+    detallePresentacion.innerHTML = `<strong>Artículo:</strong> ${articulo.nombre_articulo} | <strong>Presentación:</strong> ${articulo.presentacion || 'N/A'}`;
+    document.getElementById('input-costo').value = articulo.precio_costo || '';
+    
+    inputBusqueda.value = '';
+    sugerenciasBusqueda.innerHTML = '';
+    document.getElementById('input-cantidad').focus();
+}
 
-        // Validaciones básicas
-        if (!articuloActual || !cant || !costo) {
-            alert("Seleccione un artículo, cantidad y costo.");
-            return;
-        }
+function imprimirProveedores(proveedores) {
+    const selectProveedor = document.getElementById('select-proveedor');
+    console.log("imprimiendo proveedores", proveedores, selectProveedor);
+    if (!selectProveedor) return;
 
-        // Creamos el objeto del renglón
-        const item = {
-            articulo_id: articuloActual.id,
-            nombre: articuloActual.nombre_articulo,
-            presentacion: articuloActual.presentacion,
-            cantidad: parseInt(cant),
-            costo_unitario: parseFloat(costo),
-            lote: lote,
-            fecha_caducidad: vence,
-            subtotal: parseInt(cant) * parseFloat(costo)
-        };
-
-        // Lo agregamos a nuestra lista temporal
-        detalleFactura.push(item);
+    selectProveedor.innerHTML = '<option value="" selected disabled>Seleccione un proveedor...</option>';
+    
+    proveedores.forEach(prov => {
+        const option = document.createElement('option');
+        option.value = prov.id; 
+        option.textContent = prov.nombre_proveedor;
+        selectProveedor.appendChild(option);
+    });
+    selectProveedor.onchange = (e) => {
+        const selectedOption = e.target.options[e.target.selectedIndex];
         
-        // Actualizamos la tabla y limpiamos el área de captura
-        renderizarTablaTemporal();
-        limpiarFormularioCaptura();
-    });
-
-
-    const btnGuardar = document.getElementById("guardarFactura");
-if (btnGuardar) {
-    btnGuardar.addEventListener("click", async () => {
-        // Validación rápida antes de procesar
-        if (detalleFactura.length === 0) {
-            alert("No hay artículos agregados a la factura.");
-            return;
-        }
+        proveedorSeleccionado = e.target.value
         
-        // Confirmación del usuario
-        if (confirm("¿Estás seguro de que deseas guardar esta factura y registrar la entrada?")) {
-            await ejecutarGuardadoFactura();
-        }
-    });
+        
+        console.log("📍 Proveedor seleccionado y guardado:", proveedorSeleccionado);
+    };
 }
 
-
-const btnCancelar = document.getElementById("btnCancelarEntrada");
-if (btnCancelar) {
-    btnCancelar.addEventListener("click", () => {
-        if (confirm("¿Estás seguro? Se perderán todos los artículos capturados en esta factura.")) {
-            limpiarTodoPostGuardado();
-        }
-    });
-}
-
-
-function eliminarRenglon(index) {
-    // 1. Confirmación simple (opcional)
-    // if (!confirm("¿Deseas quitar este artículo de la lista?")) return;
-
-    // 2. Eliminamos el elemento del array usando su índice
-    detalleFactura.splice(index, 1);
-
-    // 3. Volvemos a dibujar la tabla para que se refleje el cambio y se recalcule el total
-    renderizarTablaTemporal();
-    
-}
-
-
-function limpiarFormularioCaptura() {
-    articuloActual = null; // Resetear la referencia
-    document.getElementById("input-busqueda").value = "";
-    document.getElementById("input-cantidad").value = "";
-    document.getElementById("input-costo").value = "";
-    document.getElementById("input-lote").value = "";
-    document.getElementById("input-caducidad").value = "";
-    document.getElementById("detalle-presentacion").innerHTML = '<p class="text-muted small">Articulo : presentacion : ---</p>';
-    
-    // Devolvemos el foco al buscador para el siguiente artículo
-    document.getElementById("input-busqueda").focus();
+async function cargarProveedores() {
+    const lista = await obtenerProveedoresAPI();
+    console.log("funcion cargar proveedores");
+    console.log(lista)
+    imprimirProveedores(lista);
 }

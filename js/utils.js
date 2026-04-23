@@ -61,16 +61,12 @@ export async function refrescarVista() {
 export async function obtenerProveedoresAPI() {
     try {
         const resultado = await customFetch('/api/proveedores', 'GET');
-        
-        
-        imprimirProveedores(resultado.data); 
-        
-        
+        return resultado.data || resultado; // Solo retornamos la data
     } catch (error) {
         console.error("Error al obtener proveedores", error);
+        return [];
     }
 }
-
 
 
 export function renderizarTablaTemporal() {
