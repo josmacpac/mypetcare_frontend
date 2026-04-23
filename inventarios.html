@@ -175,7 +175,7 @@
                 <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEntrada">
                     <i class="fas fa-truck-loading me-2"></i> Entrada
                 </button>
-                <button class="btn btn-warning text-white rounded-pill px-4 py-2 shadow-sm"  data-bs-toggle="modal" data-bs-target="#modalReporteCaducidad">
+                <button class="btn btn-warning text-white rounded-pill px-4 py-2 shadow-sm"  data-bs-toggle="modal" data-bs-target="#modalReporteCaducidad" onclick="cargarReporteCaducidad()">
                     <i class="fas fa-calendar-times me-2"></i> Reporte Caducidades
                 </button>
                 <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#">
@@ -320,6 +320,7 @@
     </div>
 </div>
 
+// Modal caducidades
 <div class="modal fade" id="modalReporteCaducidad" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
@@ -360,24 +361,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="table-danger-light">
-                                <td class="ps-3 fw-bold">750100200300</td>
-                                <td>Vacuna Antirrábica 10ml</td>
-                                <td><span class="badge bg-light text-dark">L-9982</span></td>
-                                <td>10/Feb/2026</td>
-                                <td class="text-danger fw-bold">-10 días</td>
-                                <td>3 pzas</td>
-                                <td><span class="badge bg-danger rounded-pill px-3">VENCIDO</span></td>
-                            </tr>
-                            <tr>
-                                <td class="ps-3 fw-bold">750444555666</td>
-                                <td>Desparasitante Interno</td>
-                                <td><span class="badge bg-light text-dark">L-2201</span></td>
-                                <td>25/Mar/2026</td>
-                                <td class="text-warning fw-bold">33 días</td>
-                                <td>12 pzas</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill px-3">PRÓXIMO</span></td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -389,6 +373,8 @@
         </div>
     </div>
 </div>
+
+// Modal lotes
 <div class="modal fade" id="modalLotes" tabindex="-1" aria-labelledby="modalLotesLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

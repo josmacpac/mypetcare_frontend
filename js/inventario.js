@@ -356,4 +356,62 @@ async function verDetalleLotes(idArticulo) {
         console.error("Error al cargar detalles de lotes:", error);
     }
 }
+
+async function cargarReporteCaducidad() {
+    try {
+        const datos = await customFetch('/api/reporte-caducidad');
+        const tbody = document.querySelector('#modalReporteCaducidad tbody');
+        tbody.innerHTML = '';
+
+        datos.forEach(item => {
+            // --- INICIO OPCIÓN B ---
+            const d = new Date(item.fecha_caducidad);
+            
+            // Usamos métodos UTC para ignorar el desfase de Chihuahua
+            const dia = String(d.getUTCDate()).padStart(2, '0');
+            // 'short' nos dará "may", "abr", etc.
+            const mes = d.toLocaleString('es-MX', { month: 'short', timeZone: 'UTC' }).replace('.', '');
+            const anio = d.getUTCFullYear();
+
+            const fechaFormat = `${dia}/${mes}/${anio}`;
+            // --- FIN OPCIÓN B ---
+
+            // Lógica de colores (se mantiene igual)
+            let badgeClass = 'bg-info';
+            let rowClass = '';
+            let textClass = 'text-dark';
+
+            if (item.estado_alerta === 'VENCIDO') {
+                badgeClass = 'bg-danger';
+                rowClass = 'table-danger-light'; 
+                textClass = 'text-danger fw-bold';
+            } else if (item.estado_alerta === 'CRÍTICO') {
+                badgeClass = 'bg-warning text-dark';
+                textClass = 'text-warning fw-bold';
+            }
+
+            const fila = `
+                <tr class="${rowClass}">
+                    <td class="ps-3 fw-bold">${item.sku}</td>
+                    <td>${item.articulo}</td>
+                    <td><span class="badge bg-light text-dark">${item.lote}</span></td>
+                    <td>${fechaFormat}</td>
+                    <td class="${textClass}">${item.dias_restantes} días</td>
+                    <td>${item.cantidad} pzas</td>
+                    <td><span class="badge ${badgeClass} rounded-pill px-3">${item.estado_alerta}</span></td>
+                </tr>
+            `;
+            tbody.insertAdjacentHTML('beforeend', fila);
+        });
+
+        const modal = new bootstrap.Modal(document.getElementById('modalReporteCaducidad'));
+        modal.show();
+
+    } catch (error) {
+        console.error("Error al cargar reporte:", error);
+    }
+}
+
+
 window.verDetalleLotes = verDetalleLotes;
+window.cargarReporteCaducidad = cargarReporteCaducidad;
