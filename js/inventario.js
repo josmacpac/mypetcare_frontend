@@ -1,6 +1,7 @@
 import { crearArticulo, obtenerArticulos, rellenarTablaArticulos } from "./articulos.js";
-import { filtrarLista } from './utils.js';
+import { filtrarLista, renderizarTablaExistencia } from './utils.js';
 import { customFetch } from './sesion.js';
+
 // ===============================
 // Inicialización
 // ===============================
@@ -426,7 +427,7 @@ async function consultaExistencia() {
     }
 }
 
-function renderizarTablaExistencia(datos) {
+/* function renderizarTablaExistencia(datos) {
     const tbody = document.getElementById("tablaExistencias");
     tbody.innerHTML = '';
 
@@ -452,7 +453,7 @@ function renderizarTablaExistencia(datos) {
         tbody.insertAdjacentHTML('beforeend', fila);
     });
 }
-
+ */
 async function verDetalleLotes(idArticulo) {
     try {
         const lotes = await customFetch(`/api/existencias/lotes/${idArticulo}`);

@@ -19,3 +19,30 @@ export function filtrarLista(lista, termino) {
         return buscarCampo(item);
     });
 }
+
+export function renderizarTablaExistencia(datos) {
+    const tbody = document.getElementById("tablaExistencias");
+    tbody.innerHTML = '';
+
+    datos.forEach(item => {
+        // Lógica visual: si hay 0 existencia, mostrar 'Agotado'
+        const stockDisplay = item.existencia === 0 ? 'AGOTADO' : item.existencia;
+        const stockClass = item.existencia <= 5 ? 'fw-bold text-danger' : '';
+
+        const fila = `
+            <tr>
+                <td>${item.sku}</td>
+                <td>${item.articulo}</td>
+                <td><span class="badge bg-secondary">${item.categoria}</span></td>
+                <td class="${stockClass}">${stockDisplay}</td>
+                <td>$${item.precio.toLocaleString('es-MX')}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.id})">
+                        🔍 Lotes
+                    </button>
+                </td>
+            </tr>
+        `;
+        tbody.insertAdjacentHTML('beforeend', fila);
+    });
+}
