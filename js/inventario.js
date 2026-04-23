@@ -325,8 +325,16 @@ async function consultaExistencia() {
     }
 }
 
-async function verDetalleLotes(idArticulo) {
+async function verDetalleLotes(idArticulo, nombreArticulo) {
     try {
+        // 1. Antes de ir al backend, ya sabemos el nombre. ¡Pongámoslo!
+        const modalTitle = document.getElementById('modalLotesLabel');
+        if (modalTitle) {
+            // Usamos el nombre que recibimos por parámetro
+            modalTitle.innerHTML = `📋 Lotes: <span class="text-white fw-bold">${nombreArticulo}</span>`;
+        }
+
+        // 2. Ahora sí, pedimos los lotes (que solo traen números y fechas)
         const lotes = await customFetch(`/api/existencias/lotes/${idArticulo}`);
         
         const tbodyLotes = document.getElementById("tablaLotesCuerpo");
@@ -336,11 +344,17 @@ async function verDetalleLotes(idArticulo) {
             tbodyLotes.innerHTML = '<tr><td colspan="3" class="text-center">No hay lotes con existencias.</td></tr>';
         } else {
             lotes.forEach(l => {
-                const fecha = new Date(l.fecha_caducidad).toLocaleDateString('es-MX');
+                // Tu lógica de fecha (Opción B para que no salte de día)
+                const d = new Date(l.fecha_caducidad);
+                const dia = String(d.getUTCDate()).padStart(2, '0');
+                const mes = d.toLocaleString('es-MX', { month: 'short', timeZone: 'UTC' }).replace('.', '');
+                const anio = d.getUTCFullYear();
+                const fechaFormat = `${dia}/${mes}/${anio}`;
+
                 const fila = `
                     <tr>
                         <td><span class="fw-bold">${l.lote}</span></td>
-                        <td>${fecha}</td>
+                        <td>${fechaFormat}</td>
                         <td class="text-center">${l.cantidad_actual}</td>
                     </tr>
                 `;
@@ -348,15 +362,15 @@ async function verDetalleLotes(idArticulo) {
             });
         }
 
+        // 3. Mostramos el modal
         const modalElement = document.getElementById('modalLotes');
-        const modalLotes = new bootstrap.Modal(modalElement);
+        const modalLotes = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modalLotes.show();
 
     } catch (error) {
         console.error("Error al cargar detalles de lotes:", error);
     }
 }
-
 async function cargarReporteCaducidad() {
     try {
         const datos = await customFetch('/api/reporte-caducidad');

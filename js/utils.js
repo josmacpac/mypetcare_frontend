@@ -37,7 +37,7 @@ export function renderizarTablaExistencia(datos) {
                 <td class="${stockClass}">${stockDisplay}</td>
                 <td>$${item.precio.toLocaleString('es-MX')}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.id})">
+                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalleLotes(${item.id}, '${item.articulo}')">
                         🔍 Lotes
                     </button>
                 </td>
