@@ -2,6 +2,7 @@ import { crearArticulo, obtenerArticulos, rellenarTablaArticulos, registrarNuevo
 import { filtrarLista, renderizarTablaExistencia, refrescarVista, renderizarTablaTemporal} from './utils.js';
 import { customFetch } from './sesion.js';
 
+
 // ===============================
 // Inicialización
 // ===============================
