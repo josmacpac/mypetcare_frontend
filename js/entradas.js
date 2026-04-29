@@ -6,6 +6,7 @@ console.log("✅ Archivo modal.js cargado correctamente");
 let articuloSeleccionado = null;
 let articulosCache = [];
 let proveedorSeleccionado = null;
+let idClinicaSeleccionada = null;
 
    // 1. Referencias de los elementos de la Cabecera
     const inputFactura = document.getElementById('input-factura');
@@ -109,6 +110,7 @@ let proveedorSeleccionado = null;
 
     modalEntrada.addEventListener('show.bs.modal', () => {
         console.log("se abrio modal de entrada");
+        inicializarContextoClinica();
      cargarProveedores();
 });
 
@@ -116,6 +118,25 @@ let proveedorSeleccionado = null;
 
 
     /* FUNCIONES */
+
+function inicializarContextoClinica() {
+    // Extraemos el dato del localStorage
+    const idGuardado = localStorage.getItem('clinica_id_actual');
+
+    if (idGuardado) {
+        // Convertimos a número por seguridad (Supabase prefiere ints para IDs)
+        idClinicaSeleccionada = parseInt(idGuardado);
+        console.log("✅ Contexto de clínica cargado:", idClinicaSeleccionada);
+    } else {
+        // Si por alguna razón no está (ej. borraron caché), protegemos el sistema
+        console.error("❌ No se encontró el ID de la clínica en la sesión.");
+        alert("Su sesión ha expirado o no tiene una clínica vinculada. Por favor, inicie sesión de nuevo.");
+        window.location.href = 'login.html';
+    }
+}
+
+// 2. Ejecutar la función de inmediato al cargar el script
+
 
 function renderizarSugerencias(articulos) {
     sugerenciasBusqueda.innerHTML = '';
