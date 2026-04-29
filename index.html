@@ -51,7 +51,7 @@
         <div class="offcanvas-body">
             <ul class="nav flex-column">
                 <li class="nav-item"><a href="index.html" class="nav-link py-3 active fw-bold text-primary"><i class="fas fa-th-large me-2"></i> Inicio</a></li>
-                <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-calendar-day me-2"></i> Citas</a></li>
+                <li class="nav-item"><a href="citas.html" class="nav-link py-3 text-dark"><i class="fas fa-calendar-day me-2"></i> Citas</a></li>
                 <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-paw me-2"></i> Pacientes</a></li>
                 <li class="nav-item"><a href="inventarios.html" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Inventario</a></li>
                 <li class="nav-item"><a href="#" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Reportes</a></li>
@@ -69,7 +69,7 @@
                 <hr>
                 <ul class="nav flex-column mt-4">
                     <li class="nav-item"><a href="index.html" class="nav-link active">🏠 Inicio</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">📅 Citas de Hoy</a></li>
+                    <li class="nav-item"><a href="citas.html" class="nav-link">📅 Citas de Hoy</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">🐾 Pacientes</a></li>
                     <li class="nav-item"><a href="inventarios.html" class="nav-link">🩺 Inventario</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">📊 Reportes</a></li>
@@ -88,13 +88,29 @@
                     <h2 class="fw-bold mb-0">¡Hola, <span style="color: var(--pearl-agua);">Dr. García</span>!</h2>
                     <p class="text-muted">Esto es lo que sucede hoy en la clínica.</p>
                 </div>
-                <div class="bg-white p-2 px-4 rounded-pill shadow-sm d-flex align-items-center gap-3">
-                    <span class="small fw-bold text-secondary">Admin</span>
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                         style="width: 40px; height: 40px; background-color: #f0f7f7; border: 2px solid #5fb7b7; color: #5fb7b7;">
-                        <i class="fas fa-user"></i>
-                    </div>
+                 <div class="bg-white p-2 px-4 rounded-pill shadow-sm d-flex align-items-center gap-3">
+        <span class="small fw-bold text-secondary" id="userName">Cargando...</span>
+        
+        <div class="dropdown">
+            <button class="btn border-0 p-0 d-flex align-items-center justify-content-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="width: 45px; height: 45px;">
+                
+                <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                     style="width: 45px; height: 45px; background-color: var(--alice-blue); border: 2px solid var(--pearl-agua); color: var(--pearl-agua); font-size: 1.2rem;">
+                    <i class="fas fa-user"></i>
                 </div>
+                
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu" style="border-radius: 15px; z-index: 9999;">
+                <li><h6 class="dropdown-header">Opciones de Cuenta</h6></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger fw-bold" href="#" id="btnLogout">
+                        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
             </div>
 
             <div class="row g-4 mb-5">

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacientes - MyPetCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <style>
+        html {display: none;}
+    </style>
+    <script type="module" src="js/authGuard.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white d-lg-none shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">🐾 MyPetCare</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" style="width: 280px;">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold">🐾 MyPetCare</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="index.html" class="nav-link py-3 text-dark"><i class="fas fa-th-large me-2"></i> Inicio</a></li>
+                <li class="nav-item"><a href="citas.html" class="nav-link py-3 text-dark"><i class="fas fa-calendar-day me-2"></i> Citas</a></li>
+                <li class="nav-item"><a href="pacientes.html" class="nav-link py-3 active fw-bold text-primary"><i class="fas fa-paw me-2"></i> Pacientes</a></li>
+                <li class="nav-item"><a href="inventarios.html" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Inventario</a></li>
+                <li class="nav-item"><a href="reportes.html" class="nav-link py-3 text-dark"><i class="fas fa-box me-2"></i> Reportes</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="d-flex">
+        <nav class="sidebar d-none d-lg-block">
+            <div class="p-4">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">🐾 MyPetCare</h3>
+                    <small class="opacity-75">Panel de Gestión</small>
+                </div>
+                <hr>
+                <ul class="nav flex-column mt-4">
+                    <li class="nav-item"><a href="index.html" class="nav-link ">🏠 Inicio</a></li>
+                    <li class="nav-item"><a href="citas.html" class="nav-link ">📅 Citas de Hoy</a></li>
+                    <li class="nav-item"><a href="pacientes.html" class="nav-link active">🐾 Pacientes</a></li>
+                    <li class="nav-item"><a href="inventarios.html" class="nav-link">🩺 Inventario</a></li>
+                    <li class="nav-item"><a href="reportes.html" class="nav-link">📊 Reportes</a></li>
+                </ul>
+                <div class="mt-5 pt-3">
+                    <button class="btn btn-sidebar w-100 rounded-pill py-3 mb-2">+ Nueva Consulta</button>
+                    <button class="btn btn-outline-light w-100 rounded-pill py-2 border-0" style="background: rgba(255,255,255,0.1)">+ Nueva Venta</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow-1 p-4 p-md-5">
+            
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h2 class="fw-bold mb-0">¡Hola, <span style="color: var(--pearl-agua);">Dr. García</span>!</h2>
+                    <p class="text-muted">Esto es lo que sucede hoy en la clínica.</p>
+                </div>
+                 <div class="bg-white p-2 px-4 rounded-pill shadow-sm d-flex align-items-center gap-3">
+        <span class="small fw-bold text-secondary" id="userName">Cargando...</span>
+        
+        <div class="dropdown">
+            <button class="btn border-0 p-0 d-flex align-items-center justify-content-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" style="width: 45px; height: 45px;">
+                
+                <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                     style="width: 45px; height: 45px; background-color: var(--alice-blue); border: 2px solid var(--pearl-agua); color: var(--pearl-agua); font-size: 1.2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenu" style="border-radius: 15px; z-index: 9999;">
+                <li><h6 class="dropdown-header">Opciones de Cuenta</h6></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger fw-bold" href="#" id="btnLogout">
+                        <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+            </div>
+
+           
+
+           <!-- CONTENIDO -->
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/sesion.js"></script>
+
+</body>
+</html>
