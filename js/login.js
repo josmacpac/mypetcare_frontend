@@ -18,37 +18,48 @@ loginForm.addEventListener('submit', async (e) => {
 
   if (authError) {
     alert("Error de credenciales: " + authError.message);
-    return; // Detenemos la ejecución si los datos son incorrectos
-  }
-
-  // 2. Si el login fue exitoso, verificamos el ROL en la tabla 'perfiles'
-  const userId = data.user.id;
-  console.log(userId)
-  
-  const { data: usuarioDb, error: dbError } = await supabase
-    .from('usuarios') // <--- Cambiado a tu tabla 'usuarios'
-    .select('rol')
-    .eq('id_usuario', userId) // <--- O 'id', según tu estructura
-    .limit(1);
-
-
-
-  if (dbError || !usuarioDb) {
-    console.error("No se pudo obtener el perfil:", dbError);
-    // Si no hay perfil, lo mandamos a unauthorized por seguridad
-    //window.location.href = './unauthorized.html';
-    console.log("unauthorized, no se obtuvo datos del rol");
     return;
   }
 
-  // 3. Lógica de redirección basada en el rol
-  console.log("Rol detectado:", usuarioDb[0].rol);
+  const userId = data.user.id;
 
-  if (usuarioDb[0].rol === 102) {
+  // 2. Consulta combinada: Traemos el ROL de 'usuarios' 
+  // y el ID_CLINICA de 'veterinarios_data'
+  
+  // Primero obtenemos el rol
+  const { data: usuarioDb, error: dbError } = await supabase
+    .from('usuarios')
+    .select('rol')
+    .eq('id_usuario', userId)
+    .single();
+
+  // Luego obtenemos la clínica vinculada al veterinario (UUID)
+  const { data: veteData, error: veteError } = await supabase
+    .from('veterinarios_data')
+    .select('id_clinica')
+    .eq('id', userId) // Usamos el UUID que viene del Auth
+    .single();
+
+  if (dbError || veteError || !usuarioDb || !veteData) {
+    console.error("Error al obtener datos de perfil o clínica");
+    alert("Error al configurar la sesión de la clínica.");
+    return;
+  }
+
+  // 3. GUARDADO EN STORAGE (La "llave" para tus módulos)
+  localStorage.setItem('clinica_id_actual', veteData.id_clinica);
+  localStorage.setItem('rol_usuario', usuarioDb.rol);
+  // Opcional: guardar nombre para mostrar un saludo
+  localStorage.setItem('sesion_activa', 'true');
+
+  console.log("Sesión configurada para Clínica:", veteData.id_clinica);
+
+  // 4. Lógica de redirección basada en el rol
+  if (usuarioDb.rol === 102) {
+    console.log("Acceso autorizado como administrador");
     window.location.href = './index.html';
-    console.log("acceso autorizado, es administrador");
   } else {
+    console.warn("Rol insuficiente");
     window.location.href = './unauthorized.html';
-    console.log("unauthorized");
   }
 });
