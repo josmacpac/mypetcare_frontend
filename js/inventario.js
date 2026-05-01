@@ -1,6 +1,6 @@
 import { crearArticulo, obtenerArticulos, rellenarTablaArticulos, registrarNuevoArticulo, filtrarArticulos} from "./articulos.js";
 import { filtrarLista, renderizarTablaExistencia, refrescarVista, renderizarTablaTemporal} from './utils.js';
-import { customFetch } from './sesion.js';
+import { customFetch} from './sesion.js';
 
 
 // ===============================
@@ -59,6 +59,8 @@ function registrarEventos() {
     }
 
 }
+
+
 
 // ===============================
 // Funciones
@@ -200,9 +202,11 @@ async function cargarReporteCaducidad() {
             tbody.insertAdjacentHTML('beforeend', fila);
         });
 
-        const modal = new bootstrap.Modal(document.getElementById('modalReporteCaducidad'));
-        modal.show();
+       const modalElement = document.getElementById('modalReporteCaducidad');
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+        modalInstance.show();
 
+  
     } catch (error) {
         console.error("Error al cargar reporte:", error);
     }

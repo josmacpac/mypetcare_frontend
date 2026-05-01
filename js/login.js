@@ -23,10 +23,6 @@ loginForm.addEventListener('submit', async (e) => {
 
   const userId = data.user.id;
 
-  // 2. Consulta combinada: Traemos el ROL de 'usuarios' 
-  // y el ID_CLINICA de 'veterinarios_data'
-  
-  // Primero obtenemos el rol
   const { data: usuarioDb, error: dbError } = await supabase
     .from('usuarios')
     .select('rol')
@@ -45,6 +41,15 @@ loginForm.addEventListener('submit', async (e) => {
     alert("Error al configurar la sesión de la clínica.");
     return;
   }
+
+  const { data: clinicaInfo } = await supabase
+  .from('clinicas')
+  .select('nombre_clinica')
+  .eq('id', veteData.id_clinica)
+  .maybeSingle();
+
+const nombreClinica = clinicaInfo?.nombre_clinica || "Mi Clínica";
+localStorage.setItem('clinica_nombre', nombreClinica);
 
   // 3. GUARDADO EN STORAGE (La "llave" para tus módulos)
   localStorage.setItem('clinica_id_actual', veteData.id_clinica);

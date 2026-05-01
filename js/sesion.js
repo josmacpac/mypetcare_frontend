@@ -19,11 +19,22 @@ export async function configurarInterfazUsuario() {
         }
     }
 
+    // --- NUEVA LÓGICA DE LA CLÍNICA ---
+    // 2. Extraer nombre de la clínica del storage
+    const nombreClinica = localStorage.getItem('clinica_nombre') || "Clínica no identificada";
+    const elementoH2 = document.getElementById("nombreClinica");
+    
+    if (elementoH2) {
+        // Usamos innerHTML para mantener el estilo que querías
+        elementoH2.innerHTML = `Clínica: <span style="color: var(--pearl-agua);">${nombreClinica}</span>`;
+    }
+
     // Configurar el botón de Logout si existe en el DOM actual
     const btnLogout = document.getElementById('btnLogout');
     if (btnLogout) {
         btnLogout.onclick = async (e) => {
             e.preventDefault();
+            localStorage.clear();
             await supabase.auth.signOut();
             window.location.href = 'login.html';
         };
@@ -67,3 +78,6 @@ export async function customFetch(endpoint, method = 'GET', body = null) {
         throw error;
     }
 }
+
+
+
